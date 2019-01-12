@@ -1,32 +1,99 @@
 apply plugin: 'com.android.application'
-
 apply plugin: 'kotlin-android'
-
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'com.google.gms.google-services'
+apply from: "${rootDir}/git-version.gradle"
+apply from: '../dependencies.gradle'
 
 android {
+
+    def versionMajor = Integer.parseInt(VERSION_MAJOR)
+    def versionMinor = Integer.parseInt(VERSION_MINOR)
+    def versionPatch = Integer.parseInt(VERSION_PATCH)
+    def versionBuild = Integer.parseInt(VERSION_BUILD)
+
     compileSdkVersion 28
     defaultConfig {
         applicationId "com.github.keyrillanskiy.cloather"
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 1
-        versionName "1.0"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        versionCode versionMajor * 10000 + versionMinor * 1000 + versionPatch * 100 + versionBuild
+        versionName "${versionMajor}.${versionMinor}.${versionPatch}"
+
+        multiDexEnabled true
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
-        release {
+        debug {
+            versionNameSuffix "-D_${gitRevision}"
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+        debugLeak {
+            versionNameSuffix "-Leak_${gitRevision}"
+            debuggable = true
+            minifyEnabled false
+            signingConfig signingConfigs.debug
+        }
+        release {
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            //signingConfig signingConfigs.play
+        }
+    }
+
+    sourceSets {
+        main.java.srcDirs += 'src/main/code'
+    }
+
+    applicationVariants.all { variant ->
+        variant.outputs.all {
+            outputFileName = "cloather_v${variant.versionName}.${variant.flavorName}.apk"
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    androidExtensions { experimental = true }
+
+    dexOptions {
+        preDexLibraries true
+        javaMaxHeapSize "2g"
+        maxProcessCount 4
+        jumboMode = true
     }
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation"org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation 'com.android.support:appcompat-v7:28.0.0'
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.2'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    // Все зависимости находятся в файле "dependencies.gradle"
+
+    implementation fileDependencies.values()
+
+    implementation kotlinDependencies.values()
+
+    implementation androidComponentsDependencies.values()
+    implementation aacDependencies.values()
+
+    implementation uiDependencies.values()
+    annotationProcessor uiDependenciesAnnotationProcessor.values()
+
+    implementation httpDependencies.values()
+
+    implementation rxDependencies.values()
+    implementation diDependencies.values()
+
+    implementation googleDependencies.values()
+
+    implementation loggingDependencies.values()
+
+    debugImplementation debuggingDependenciesForRelease.values()
+    debugLeakImplementation debuggingDependencies.values()
+    releaseImplementation debuggingDependenciesForRelease.values()
+
+    testImplementation testingDependencies.values()
+    androidTestImplementation instrumentalTestingDependencies.values()
 }
