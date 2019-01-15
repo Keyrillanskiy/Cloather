@@ -39,8 +39,11 @@ ext {
             loggingInterceptor: "com.squareup.okhttp3:logging-interceptor:3.12.0"
     ]
 
+    def jacksonVersion = "2.9.6"
     jsonDependencies = [
-            jaskson : "com.fasterxml.jackson.core:jackson-databind:2.9.6",
+            jasksonCore : "com.fasterxml.jackson.core:jackson-core:$jacksonVersion",
+            jasksonDataBind : "com.fasterxml.jackson.core:jackson-databind:$jacksonVersion",
+            jasksonAnnotations : "com.fasterxml.jackson.core:jackson-annotations:$jacksonVersion",
             jasksonConverter: "com.squareup.retrofit2:converter-jackson:$retrofitVersion"
     ]
 
