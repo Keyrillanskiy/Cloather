@@ -82,6 +82,7 @@ dependencies {
     annotationProcessor uiDependenciesAnnotationProcessor.values()
 
     implementation httpDependencies.values()
+    implementation jsonDependencies.values()
 
     implementation rxDependencies.values()
     implementation diDependencies.values()
