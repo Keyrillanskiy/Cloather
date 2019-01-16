@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Common -->
+    <string name="cancel">Отмена</string>
+
+    <!-- Auth screen -->
+    <string name="authorization">Авторизация</string>
+
+</resources>

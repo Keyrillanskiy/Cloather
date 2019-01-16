@@ -1,5 +1,11 @@
 <resources>
 
-    <string name="app_name">Cloather</string>
+    <string name="app_name" translatable="false">Cloather</string>
+
+    <!-- Common -->
+    <string name="cancel">Cancel</string>
+
+    <!-- Auth screen -->
+    <string name="authorization">Authorization</string>
 
 </resources>

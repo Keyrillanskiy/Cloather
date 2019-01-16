@@ -8,6 +8,7 @@ import com.squareup.leakcanary.LeakCanary
 import data.logging.DebugLogTree
 import data.logging.ReleaseLogTree
 import timber.log.Timber
+import utils.NetUtils
 
 /**
  * @author Keyrillanskiy
@@ -26,6 +27,7 @@ class CloatherApplication : MultiDexApplication() {
 
         setupTimber()
         setupLeakCanary()
+        NetUtils.init(this)
     }
 
     private fun setupTimber() {
