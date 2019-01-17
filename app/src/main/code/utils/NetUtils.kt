@@ -27,13 +27,15 @@ object NetUtils {
         } else {
             onError?.invoke()
 
-            registerNetworkCallback(object : ConnectivityManager.NetworkCallback() {
-                override fun onAvailable(network: Network?) {
-                    connectivityManager.unregisterNetworkCallback(this)
+            onConnected?.let { callback ->
+                registerNetworkCallback(object : ConnectivityManager.NetworkCallback() {
+                    override fun onAvailable(network: Network?) {
+                        connectivityManager.unregisterNetworkCallback(this)
 
-                    onConnected?.invoke()
-                }
-            })
+                        callback.invoke()
+                    }
+                })
+            }
         }
     }
 

@@ -1,23 +1,27 @@
 package presentation.screens.auth
 
-import android.accounts.Account
 import android.accounts.AccountManager
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
 import com.github.keyrillanskiy.cloather.R
-import com.google.android.gms.auth.GoogleAuthUtil
 import com.google.android.gms.auth.UserRecoverableAuthException
 import com.google.android.gms.common.AccountPicker
 import com.jakewharton.rxbinding3.view.clicks
-import domain.models.responses.SCOPES
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import kotlinx.android.synthetic.main.activity_auth.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import presentation.common.Failure
+import presentation.common.Loading
+import presentation.common.Success
+import presentation.screens.main.MainActivity
+import presentation.share.ErrorDialog
 import presentation.share.ProgressDialog
 import timber.log.Timber
+import utils.NetUtils
 import java.util.concurrent.TimeUnit
 
 /**
@@ -37,16 +41,21 @@ class AuthActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_auth)
 
+        //TODO: check if user authorized or not
+
         authButton.clicks()
-            .throttleFirst(500, TimeUnit.MILLISECONDS)
+            .throttleFirst(800, TimeUnit.MILLISECONDS)
             .subscribe { authorize() }
             .addTo(disposables)
+
+        viewModel.observeData()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == RC_SIGN_IN && resultCode != Activity.RESULT_CANCELED && data != null) {
+            showAuthProgress()
             val accountName = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME)
-            getGoogleToken(accountName)
+            viewModel.getGoogleToken(this, accountName)
         }
     }
 
@@ -56,33 +65,23 @@ class AuthActivity : AppCompatActivity() {
     }
 
     private fun authorize() {
-        val chooseAccountIntent = AccountPicker.newChooseAccountIntent(
-            null, null,
-            arrayOf("com.google"),
-            false, null, null, null, null
+        fun startAuthorization() {
+            val chooseAccountIntent = AccountPicker.newChooseAccountIntent(
+                null, null,
+                arrayOf("com.google"),
+                false, null, null, null, null
+            )
+
+            if (chooseAccountIntent.resolveActivity(packageManager) != null) {
+                startActivityForResult(chooseAccountIntent, RC_SIGN_IN)
+            }
+        }
+
+        NetUtils.withNetConnection(
+            onSuccess = { startAuthorization() },
+            onError = { showInternetAuthError() }
         )
 
-        if (chooseAccountIntent.resolveActivity(packageManager) != null) {
-            startActivityForResult(chooseAccountIntent, RC_SIGN_IN)
-        }
-    }
-
-    private fun getGoogleToken(accountName: String) {
-        try {
-            val googleToken = GoogleAuthUtil.getToken(
-                this,
-                Account(accountName, GoogleAuthUtil.GOOGLE_ACCOUNT_TYPE),
-                SCOPES
-            )
-            Timber.d("googleToken = $googleToken")
-
-            viewModel.authorize(googleToken)
-
-        } catch (e: UserRecoverableAuthException) {
-            startActivityForResult(e.intent, RC_SIGN_IN)
-        } catch (e: Exception) {
-            Timber.e(e)
-        }
     }
 
     private fun showAuthProgress() {
@@ -93,6 +92,75 @@ class AuthActivity : AppCompatActivity() {
 
     private fun hideAuthProgress() {
         (supportFragmentManager.findFragmentByTag(ProgressDialog.TAG) as? ProgressDialog)?.dismiss()
+    }
+
+    private fun showInternetAuthError() {
+        val title = getString(R.string.authorization_error_title)
+        val message = getString(R.string.internet_connection_error_message)
+
+        showErrorDialog(title, message)
+    }
+
+    private fun showUnknownAuthError() {
+        val title = getString(R.string.authorization_error_title)
+        val message = getString(R.string.unknown_error)
+
+        showErrorDialog(title, message)
+    }
+
+    private fun showErrorDialog(title: String? = null, message: String? = null) {
+        supportFragmentManager.findFragmentByTag(ErrorDialog.TAG) as? ErrorDialog
+            ?: ErrorDialog.newInstance(title, message)
+                .also {
+                    it.onOkClick = { hideAuthProgress() }
+                    it.onRetryClick = { authorize() }
+                    it.showNow(supportFragmentManager, ErrorDialog.TAG)
+                }
+    }
+
+    private fun openMainScreen() {
+        startActivity(Intent(this, MainActivity::class.java))
+    }
+
+    private fun AuthViewModel.observeData() {
+        tokenLiveData.observe(this@AuthActivity, Observer { response ->
+            when (response) {
+                is Loading -> {
+                    //nothing
+                }
+                is Success -> {
+                    val googleToken = response.value
+                    Timber.d("googleToken = $googleToken")
+                    authorize(googleToken)
+                }
+                is Failure -> {
+                    val error = response.error
+                    if (error is UserRecoverableAuthException) {
+                        startActivityForResult(error.intent, RC_SIGN_IN)
+                    } else {
+                        hideAuthProgress()
+                        showUnknownAuthError()
+                    }
+                }
+            }
+        })
+
+        authLiveData.observe(this@AuthActivity, Observer { response ->
+            when (response) {
+                is Loading -> {
+                    //nothing
+                }
+                is Success -> {
+                    //TODO: save user data in shared preferences
+                    hideAuthProgress()
+                    openMainScreen()
+                }
+                is Failure -> {
+                    hideAuthProgress()
+                    showUnknownAuthError()
+                }
+            }
+        })
     }
 
     private companion object {

@@ -12,6 +12,13 @@ import io.reactivex.Single
  */
 interface UserRepository {
 
+    /**
+     * Функция для авторизации на сервере через google token
+     *
+     * @param token Токен google
+     *
+     * @return [Single]<[User]> данные пользователя (новые, либо существующие)
+     */
     fun authorize(token: TokenWrapper): Single<User>
 
 }

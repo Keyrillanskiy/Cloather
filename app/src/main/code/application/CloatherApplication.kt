@@ -7,6 +7,10 @@ import com.github.keyrillanskiy.cloather.BuildConfig
 import com.squareup.leakcanary.LeakCanary
 import data.logging.DebugLogTree
 import data.logging.ReleaseLogTree
+import di.authModule
+import di.commonModule
+import di.repositoriesModule
+import org.koin.android.ext.android.startKoin
 import timber.log.Timber
 import utils.NetUtils
 
@@ -27,6 +31,7 @@ class CloatherApplication : MultiDexApplication() {
 
         setupTimber()
         setupLeakCanary()
+        setupDependencyInjection()
         NetUtils.init(this)
     }
 
@@ -40,6 +45,14 @@ class CloatherApplication : MultiDexApplication() {
             return
         }
         LeakCanary.install(this)
+    }
+
+    private fun setupDependencyInjection() {
+        val modules = listOf(
+            commonModule, repositoriesModule,
+            authModule
+        )
+        startKoin(this, modules)
     }
 
 }

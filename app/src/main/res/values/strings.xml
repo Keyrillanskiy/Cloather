@@ -4,8 +4,13 @@
 
     <!-- Common -->
     <string name="cancel">Cancel</string>
+    <string name="ok">OK</string>
+    <string name="retry">Retry</string>
+    <string name="internet_connection_error_message">Check your internet connection and try again</string>
+    <string name="unknown_error">Unknown error</string>
 
     <!-- Auth screen -->
     <string name="authorization">Authorization</string>
+    <string name="authorization_error_title">Authorization error</string>
 
 </resources>

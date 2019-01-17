@@ -15,16 +15,6 @@ import com.github.keyrillanskiy.cloather.R
  */
 class ProgressDialog : DialogFragment() {
 
-    companion object {
-        val TAG: String = ProgressDialog::class.java.simpleName
-        private const val ARG_TITLE = "cloather.args.title"
-
-        fun newInstance(title: String? = null) = ProgressDialog().apply {
-            arguments = Bundle().apply { putString(ARG_TITLE, title) }
-            isCancelable = false
-        }
-    }
-
     var onCancel: (() -> Unit)? = null
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -37,6 +27,16 @@ class ProgressDialog : DialogFragment() {
             onCancel?.let { lambda -> setPositiveButton(R.string.cancel) { _, _ -> lambda.invoke() } }
             setView(R.layout.dialog_progress)
         }.create()
+    }
+
+    companion object {
+        val TAG: String = ProgressDialog::class.java.simpleName
+        private const val ARG_TITLE = "cloather.args.title"
+
+        fun newInstance(title: String? = null) = ProgressDialog().apply {
+            arguments = Bundle().apply { putString(ARG_TITLE, title) }
+            isCancelable = false
+        }
     }
 
 }

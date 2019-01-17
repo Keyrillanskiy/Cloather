@@ -1,10 +1,12 @@
 package data.network
 
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.github.keyrillanskiy.cloather.BuildConfig
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.jackson.JacksonConverterFactory
 import utils.serverBaseUrl
 import java.util.concurrent.TimeUnit
@@ -28,7 +30,8 @@ class CloatherHttpClient {
     private fun configRetrofit(baseUrl: String, isDebugging: Boolean): Retrofit {
         return Retrofit.Builder()
             .baseUrl(baseUrl)
-            .addConverterFactory(JacksonConverterFactory.create())
+            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+            .addConverterFactory(JacksonConverterFactory.create(jacksonObjectMapper()))
             .client(configHttpClient(isDebugging))
             .build()
     }
