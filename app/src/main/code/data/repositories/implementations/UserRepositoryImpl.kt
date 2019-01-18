@@ -4,7 +4,7 @@ import data.network.CloatherHttpClient
 import data.network.apiSpecs.UserApiSpec
 import data.repositories.interfaces.UserRepository
 import domain.models.responses.TokenWrapper
-import domain.models.responses.User
+import domain.models.responses.UserResponse
 import io.reactivex.Single
 
 /**
@@ -15,6 +15,6 @@ class UserRepositoryImpl(httpClient: CloatherHttpClient) : UserRepository {
 
     private val userApi = httpClient.client.create(UserApiSpec::class.java)
 
-    override fun authorize(token: TokenWrapper): Single<User> = userApi.authorize(token)
+    override fun authorize(token: TokenWrapper): Single<UserResponse> = userApi.authorize(token)
 
 }

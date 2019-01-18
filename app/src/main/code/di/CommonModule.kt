@@ -1,6 +1,8 @@
 package di
 
 import data.network.CloatherHttpClient
+import data.preferences.Preferences
+import org.koin.android.ext.koin.androidApplication
 import org.koin.dsl.module.module
 import utils.SchedulersFacade
 
@@ -14,4 +16,5 @@ import utils.SchedulersFacade
 val commonModule = module {
     single { CloatherHttpClient() }
     single { SchedulersFacade() }
+    single { Preferences(androidApplication()) }
 }

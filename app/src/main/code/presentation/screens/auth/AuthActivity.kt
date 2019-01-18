@@ -39,9 +39,13 @@ class AuthActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_auth)
 
-        //TODO: check if user authorized or not
+        if (viewModel.isUserAuthorized()) {
+            startActivity(Intent(this, MainActivity::class.java))
+            finish()
+        }
+
+        setContentView(R.layout.activity_auth)
 
         authButton.clicks()
             .throttleFirst(800, TimeUnit.MILLISECONDS)
@@ -151,7 +155,7 @@ class AuthActivity : AppCompatActivity() {
                     //nothing
                 }
                 is Success -> {
-                    //TODO: save user data in shared preferences
+                    cacheUser(response.value)
                     hideAuthProgress()
                     openMainScreen()
                 }

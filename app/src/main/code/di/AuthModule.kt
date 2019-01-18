@@ -10,5 +10,5 @@ import presentation.screens.auth.AuthViewModel
  */
 
 val authModule = module {
-    viewModel { AuthViewModel(get(), get()) }
+    viewModel { AuthViewModel(get(), get(), get()) }
 }

@@ -14,13 +14,12 @@ import com.fasterxml.jackson.annotation.JsonProperty
  */
 data class TokenWrapper(@JsonProperty(value = "googleToken") val token: String)
 
-data class User(
+data class UserResponse(
     val id: String,
-    val googleUid: String,
-    val googleAvatarURL: String,
+    val token: String,
     val name: String,
     val gender: String,
     val preferredWeather: String,
-    val token: String,
-    val wardrobe: List<Thing>?
+    val googleUid: String,
+    val googleAvatarURL: String
 )

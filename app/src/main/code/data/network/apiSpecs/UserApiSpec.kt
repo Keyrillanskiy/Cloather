@@ -1,7 +1,7 @@
 package data.network.apiSpecs
 
 import domain.models.responses.TokenWrapper
-import domain.models.responses.User
+import domain.models.responses.UserResponse
 import io.reactivex.Completable
 import io.reactivex.Single
 import okhttp3.RequestBody
@@ -15,10 +15,10 @@ import retrofit2.http.*
  */
 interface UserApiSpec {
     @POST("/api/user/auth")
-    fun authorize(@Body token: TokenWrapper): Single<User>
+    fun authorize(@Body token: TokenWrapper): Single<UserResponse>
 
     @GET("/api/user/{id}")
-    fun fetchUserData(@Path("id") id: String): Single<User>
+    fun fetchUserData(@Path("id") id: String): Single<UserResponse>
 
     @PUT("/api/user/{id}/gender")
     fun setGender(@Path("id") id: String, @Body gender: RequestBody): Completable
