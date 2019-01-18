@@ -5,4 +5,7 @@
     <color name="primaryDark">#00574B</color>
     <color name="accent">#D81B60</color>
 
+    <color name="transparent">#00000000</color> <!-- делаем свой прозрачный цвет, потому что на некоторых устройствах
+    стандартная прозрачность может быть изменена -->
+
 </resources>

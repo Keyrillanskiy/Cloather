@@ -19,6 +19,7 @@ import presentation.screens.main.MainActivity
 class IntroActivity : AppIntro2() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        setTheme(R.style.AppTheme_NoActionBar) // потому что по умолчанию стоит тема для splash
         super.onCreate(savedInstanceState)
 
         addSlide(
