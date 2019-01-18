@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import com.github.keyrillanskiy.cloather.R
 import com.github.paolorotolo.appintro.AppIntro2
 import com.github.paolorotolo.appintro.AppIntro2Fragment
+import presentation.screens.auth.AuthActivity
 import presentation.screens.main.MainActivity
 
 /**
@@ -43,16 +44,16 @@ class IntroActivity : AppIntro2() {
 
     override fun onSkipPressed(currentFragment: Fragment?) {
         super.onSkipPressed(currentFragment)
-        openMainScreen()
+        openAuthScreen()
     }
 
     override fun onDonePressed(currentFragment: Fragment?) {
         super.onDonePressed(currentFragment)
-        openMainScreen()
+        openAuthScreen()
     }
 
-    private fun openMainScreen() {
-        startActivity(Intent(this, MainActivity::class.java))
+    private fun openAuthScreen() {
+        startActivity(Intent(this, AuthActivity::class.java))
         finish()
     }
 
