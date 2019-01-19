@@ -13,4 +13,8 @@
     <string name="authorization">Authorization</string>
     <string name="authorization_error_title">Authorization error</string>
 
+    <!-- Main screen -->
+    <string name="wardrobe">Wardrobe</string>
+    <string name="settings">Settings</string>
+
 </resources>

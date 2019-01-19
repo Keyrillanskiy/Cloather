@@ -12,5 +12,8 @@
     <string name="authorization">Авторизация</string>
     <string name="authorization_error_title">Ошибка авторизации</string>
 
+    <!-- Main screen -->
+    <string name="wardrobe">Гардероб</string>
+    <string name="settings">Настройки</string>
 
 </resources>
