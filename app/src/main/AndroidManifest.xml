@@ -24,6 +24,10 @@
             android:windowSoftInputMode="stateAlwaysHidden" />
 
         <activity
+            android:name="presentation.screens.gender.GenderActivity"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+
+        <activity
             android:name="presentation.screens.main.MainActivity"
             android:theme="@style/AppTheme.Splash"
             android:windowSoftInputMode="stateAlwaysHidden">

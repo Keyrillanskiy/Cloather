@@ -39,6 +39,8 @@ class Preferences(private val context: Context) {
 
     fun isUserAuthorized(): Boolean = uid != null
 
+    fun isGenderUndefined(): Boolean = gender == Gender.UNDEFINED
+
     var isFirstLaunch: Boolean
         get() = prefs.getBoolean(PREF_IS_FIRST_LAUNCH, true)
         set(value) {
@@ -63,14 +65,14 @@ class Preferences(private val context: Context) {
                 .apply()
         }
 
-    private var gender: Gender
+    var gender: Gender
         get() {
             val string = prefs.getString(PREF_GENDER, "u")
             return string.toGender()
         }
         set(value) {
             prefs.edit()
-                .putString(PREF_GENDER, value.toString())
+                .putString(PREF_GENDER, value.value.toString())
                 .apply()
         }
 
@@ -81,7 +83,7 @@ class Preferences(private val context: Context) {
         }
         set(value) {
             prefs.edit()
-                .putString(PREF_PREFERRED_WEATHER, value.toString())
+                .putString(PREF_PREFERRED_WEATHER, value.value.toString())
                 .apply()
         }
 

@@ -9,6 +9,7 @@ import extensions.toast
 import kotlinx.android.synthetic.main.activity_main.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import presentation.screens.auth.AuthActivity
+import presentation.screens.gender.GenderActivity
 import presentation.screens.intro.IntroActivity
 
 /**
@@ -32,6 +33,9 @@ class MainActivity : AppCompatActivity() {
             finish()
         } else if (!viewModel.isUserAuthorized()) {
             AuthActivity.launch(this)
+            finish()
+        } else if (viewModel.isGenderUndefined()) {
+            GenderActivity.launch(this)
             finish()
         } else {
             initMainScreen()

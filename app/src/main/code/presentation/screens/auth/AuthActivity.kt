@@ -18,6 +18,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import presentation.common.Failure
 import presentation.common.Loading
 import presentation.common.Success
+import presentation.screens.gender.GenderActivity
 import presentation.screens.main.MainActivity
 import presentation.share.ErrorDialog
 import presentation.share.ProgressDialog
@@ -42,18 +43,16 @@ class AuthActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         if (viewModel.isUserAuthorized()) {
-            MainActivity.launch(this)
-            finish()
+            if(viewModel.isGenderUndefined()) {
+                GenderActivity.launch(this)
+                finish()
+            } else {
+                MainActivity.launch(this)
+                finish()
+            }
+        } else {
+            initAuthScreen()
         }
-
-        setContentView(R.layout.activity_auth)
-
-        authButton.clicks()
-            .throttleFirst(800, TimeUnit.MILLISECONDS)
-            .subscribe { authorize() }
-            .addTo(disposables)
-
-        viewModel.observeData()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -67,6 +66,17 @@ class AuthActivity : AppCompatActivity() {
     override fun onDestroy() {
         disposables.dispose()
         super.onDestroy()
+    }
+
+    private fun initAuthScreen() {
+        setContentView(R.layout.activity_auth)
+
+        authButton.clicks()
+            .throttleFirst(800, TimeUnit.MILLISECONDS)
+            .subscribe { authorize() }
+            .addTo(disposables)
+
+        viewModel.observeData()
     }
 
     private fun authorize() {

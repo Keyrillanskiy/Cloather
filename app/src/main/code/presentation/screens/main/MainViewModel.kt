@@ -14,4 +14,6 @@ class MainViewModel(private val preferences: Preferences) : ViewModel() {
 
     fun isUserAuthorized() = preferences.isUserAuthorized()
 
+    fun isGenderUndefined() = preferences.isGenderUndefined()
+
 }

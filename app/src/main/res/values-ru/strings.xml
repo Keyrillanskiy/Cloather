@@ -12,6 +12,10 @@
     <string name="authorization">Авторизация</string>
     <string name="authorization_error_title">Ошибка авторизации</string>
 
+    <!-- Gender screen -->
+    <string name="saving_your_gender">Запоминаем ваш пол</string>
+    <string name="saving_your_gender_error_title">Ошибка сохранения пола</string>
+
     <!-- Main screen -->
     <string name="wardrobe">Гардероб</string>
     <string name="settings">Настройки</string>

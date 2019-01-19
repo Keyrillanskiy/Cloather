@@ -82,6 +82,8 @@ class AuthViewModel(
 
     fun isUserAuthorized() = preferences.isUserAuthorized()
 
+    fun isGenderUndefined() = preferences.isGenderUndefined()
+
     private companion object {
         private const val G_PLUS_SCOPE = "oauth2:https://www.googleapis.com/auth/plus.me"
         private const val USER_INFO_SCOPE = "https://www.googleapis.com/auth/userinfo.profile"
