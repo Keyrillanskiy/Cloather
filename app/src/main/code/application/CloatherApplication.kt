@@ -7,10 +7,7 @@ import com.github.keyrillanskiy.cloather.BuildConfig
 import com.squareup.leakcanary.LeakCanary
 import data.logging.DebugLogTree
 import data.logging.ReleaseLogTree
-import di.authModule
-import di.commonModule
-import di.repositoriesModule
-import di.useCasesModule
+import di.*
 import org.koin.android.ext.android.startKoin
 import timber.log.Timber
 import utils.NetUtils
@@ -51,7 +48,7 @@ class CloatherApplication : MultiDexApplication() {
     private fun setupDependencyInjection() {
         val modules = listOf(
             commonModule, repositoriesModule, useCasesModule,
-            authModule
+            authModule, mainModule
         )
         startKoin(this, modules)
     }

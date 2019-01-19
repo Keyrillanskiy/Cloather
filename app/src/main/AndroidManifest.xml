@@ -1,8 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          xmlns:tools="http://schemas.android.com/tools"
-          package="com.github.keyrillanskiy.cloather">
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.github.keyrillanskiy.cloather">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:name="application.CloatherApplication"
@@ -17,23 +17,23 @@
 
         <activity
             android:name="presentation.screens.intro.IntroActivity"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+
+        <activity
+            android:name="presentation.screens.auth.AuthActivity"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+
+        <activity
+            android:name="presentation.screens.main.MainActivity"
             android:theme="@style/AppTheme.Splash"
             android:windowSoftInputMode="stateAlwaysHidden">
 
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
         </activity>
-
-        <activity
-            android:name="presentation.screens.auth.AuthActivity"
-            android:windowSoftInputMode="stateAlwaysHidden"/>
-
-        <activity
-            android:name="presentation.screens.main.MainActivity"
-            android:windowSoftInputMode="stateAlwaysHidden"/>
 
     </application>
 </manifest>

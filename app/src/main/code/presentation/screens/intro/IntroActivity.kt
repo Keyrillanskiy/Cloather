@@ -1,5 +1,6 @@
 package presentation.screens.intro
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.core.content.ContextCompat
@@ -7,8 +8,9 @@ import androidx.fragment.app.Fragment
 import com.github.keyrillanskiy.cloather.R
 import com.github.paolorotolo.appintro.AppIntro2
 import com.github.paolorotolo.appintro.AppIntro2Fragment
+import data.preferences.Preferences
+import org.koin.android.ext.android.inject
 import presentation.screens.auth.AuthActivity
-import presentation.screens.main.MainActivity
 
 /**
  * Экран туториала, который должен запускаться только один раз после установки приложения
@@ -18,8 +20,9 @@ import presentation.screens.main.MainActivity
  */
 class IntroActivity : AppIntro2() {
 
+    private val preferences by inject<Preferences>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
-        setTheme(R.style.AppTheme_NoActionBar) // потому что по умолчанию стоит тема для splash
         super.onCreate(savedInstanceState)
 
         addSlide(
@@ -45,17 +48,25 @@ class IntroActivity : AppIntro2() {
 
     override fun onSkipPressed(currentFragment: Fragment?) {
         super.onSkipPressed(currentFragment)
+        preferences.isFirstLaunch = false
         openAuthScreen()
     }
 
     override fun onDonePressed(currentFragment: Fragment?) {
         super.onDonePressed(currentFragment)
+        preferences.isFirstLaunch = false
         openAuthScreen()
     }
 
     private fun openAuthScreen() {
-        startActivity(Intent(this, AuthActivity::class.java))
+        AuthActivity.launch(this)
         finish()
+    }
+
+    companion object {
+        fun launch(context: Context) {
+            context.startActivity(Intent(context, IntroActivity::class.java))
+        }
     }
 
 }

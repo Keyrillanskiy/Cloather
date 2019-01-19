@@ -39,6 +39,14 @@ class Preferences(private val context: Context) {
 
     fun isUserAuthorized(): Boolean = uid != null
 
+    var isFirstLaunch: Boolean
+        get() = prefs.getBoolean(PREF_IS_FIRST_LAUNCH, true)
+        set(value) {
+            prefs.edit()
+                .putBoolean(PREF_IS_FIRST_LAUNCH, value)
+                .apply()
+        }
+
     private var uid: String?
         get() = prefs.getString(PREF_UID, null)
         set(value) {
@@ -96,6 +104,7 @@ class Preferences(private val context: Context) {
     private companion object {
         private const val PREFERENCES_NAME = "CloatherPrefs"
 
+        private const val PREF_IS_FIRST_LAUNCH = "isFirstLaunch"
         private const val PREF_UID = "uid"
         private const val PREF_NAME = "name"
         private const val PREF_GENDER = "gender"

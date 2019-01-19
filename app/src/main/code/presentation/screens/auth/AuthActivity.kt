@@ -2,6 +2,7 @@ package presentation.screens.auth
 
 import android.accounts.AccountManager
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
@@ -41,7 +42,7 @@ class AuthActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         if (viewModel.isUserAuthorized()) {
-            startActivity(Intent(this, MainActivity::class.java))
+            MainActivity.launch(this)
             finish()
         }
 
@@ -122,10 +123,6 @@ class AuthActivity : AppCompatActivity() {
                 }
     }
 
-    private fun openMainScreen() {
-        startActivity(Intent(this, MainActivity::class.java))
-    }
-
     private fun AuthViewModel.observeData() {
         tokenLiveData.observe(this@AuthActivity, Observer { response ->
             when (response) {
@@ -157,7 +154,8 @@ class AuthActivity : AppCompatActivity() {
                 is Success -> {
                     cacheUser(response.value)
                     hideAuthProgress()
-                    openMainScreen()
+                    MainActivity.launch(this@AuthActivity)
+                    finish()
                 }
                 is Failure -> {
                     hideAuthProgress()
@@ -167,8 +165,12 @@ class AuthActivity : AppCompatActivity() {
         })
     }
 
-    private companion object {
+    companion object {
         private const val RC_SIGN_IN = 1
+
+        fun launch(context: Context) {
+            context.startActivity(Intent(context, AuthActivity::class.java))
+        }
     }
 
 }
