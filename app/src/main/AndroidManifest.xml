@@ -17,18 +17,22 @@
 
         <activity
             android:name="presentation.screens.intro.IntroActivity"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
 
         <activity
             android:name="presentation.screens.auth.AuthActivity"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
 
         <activity
             android:name="presentation.screens.gender.GenderActivity"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
 
         <activity
             android:name="presentation.screens.main.MainActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.Splash"
             android:windowSoftInputMode="stateAlwaysHidden">
 
