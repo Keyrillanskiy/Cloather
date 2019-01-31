@@ -20,5 +20,7 @@
     <!-- Main screen -->
     <string name="wardrobe">Wardrobe</string>
     <string name="settings">Settings</string>
+    <string name="location_permission_reason">We need your location permission to get weather</string>
+    <string name="permit">Permit</string>
 
 </resources>
