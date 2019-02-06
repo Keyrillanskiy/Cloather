@@ -39,7 +39,7 @@ object NetUtils {
         }
     }
 
-    private fun hasNetConnection(): Boolean {
+    fun hasNetConnection(): Boolean {
         val netInfo = connectivityManager.activeNetworkInfo
         return netInfo != null && netInfo.isConnected
     }

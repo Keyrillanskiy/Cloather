@@ -22,6 +22,7 @@ class RequestLocationDialog : DialogFragment() {
             .setMessage(R.string.location_permission_reason)
             .setPositiveButton(R.string.permit) { _, _ -> onPermitClick?.invoke() }
             .setNegativeButton(R.string.cancel) { _, _ -> onCancelClick?.invoke() }
+            .setOnCancelListener { onCancelClick?.invoke() }
             .create()
     }
 
