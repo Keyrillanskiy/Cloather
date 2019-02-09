@@ -5,17 +5,26 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.location.Location
+import android.os.Build
 import android.os.Bundle
+import android.telephony.CellInfoGsm
+import android.telephony.TelephonyManager
+import android.telephony.gsm.GsmCellLocation
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
 import com.github.keyrillanskiy.cloather.R
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
 import com.google.android.gms.tasks.Task
+import domain.models.values.Language
+import domain.models.values.defineLanguage
 import extensions.toast
 import kotlinx.android.synthetic.main.activity_main.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import presentation.common.Failure
 import presentation.common.FiniteState
+import presentation.common.Loading
+import presentation.common.Success
 import presentation.screens.auth.AuthActivity
 import presentation.screens.gender.GenderActivity
 import presentation.screens.intro.IntroActivity
@@ -24,6 +33,7 @@ import timber.log.Timber
 import utils.NetUtils
 import utils.PermissionUtils
 import kotlin.properties.Delegates
+
 
 /**
  * Главный экран приложения
@@ -68,10 +78,10 @@ class MainActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         data?.let {
             if (requestCode == RC_CHECK_SETTINGS) {
-                if (resultCode == Activity.RESULT_OK) {
-                    currentState = currentState.performTransition(Event.LocationEnabled) // не бейте
+                currentState = if (resultCode == Activity.RESULT_OK) {
+                    currentState.performTransition(Event.LocationEnabled)
                 } else {
-                    currentState = currentState.performTransition(Event.LocationDisabled)
+                    currentState.performTransition(Event.LocationDisabled)
                 }
             }
         }
@@ -93,17 +103,19 @@ class MainActivity : AppCompatActivity() {
             is WithoutLocationPermissionState -> currentState = currentState.performTransition(
                 Event.RequestLocationPermission
             )
-            is LocationPermissionRequestedState -> showLocationPermissionReasonDialog()
-            is WithLocationPermissionState -> enableLocationIfNeed()
+//            is WithoutLocationPermissionState -> currentState = currentState.performTransition(
+//                Event.RequestLocationPermission
+//            )
+            is LocationPermissionRequestedState -> currentState = currentState.performTransition(Event.LocationPermissionGranted)
+//            is LocationPermissionRequestedState -> showLocationPermissionReasonDialog()
+            is WithLocationPermissionState -> currentState = currentState.performTransition(Event.LocationEnabled)
+//            is WithLocationPermissionState -> enableLocationIfNeed()
             is LocationEnabledState -> checkInternet()
             is ReadyToFetchDataState -> currentState = currentState.performTransition(Event.FetchLocation)
-            is LoadingGeolocationState -> fetchGeolocation()
+            is LoadingGeolocationState -> fetchLocationWithoutGPS()
             is UpdatingDataState -> onUpdatingData(newState.latitude, newState.longitude)
             is DataFetchErrorState -> handleError(newState.throwable)
         }
-//        when (oldState) {
-//
-//        }
     }
 
     private fun initMainScreen() {
@@ -116,8 +128,65 @@ class MainActivity : AppCompatActivity() {
             onSettingsClick = { toast("Not implemented") }
         }
 
+        viewModel.observeData()
+
         // first action with state machine
         currentState = currentState.performTransition(Event.RequestLocationPermission)
+    }
+
+    private fun MainViewModel.observeData() {
+        locationLiveData.observe(this@MainActivity, Observer { response ->
+            when (response) {
+                is Loading -> {
+                    /* nothing */
+                }
+                is Success -> {
+                    Timber.d(response.toString())
+                    toast("${response.value.position.latitude} ${response.value.position.longitude}")
+                }
+                is Failure -> showLocationError()
+            }
+        })
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun fetchLocationWithoutGPS() {
+        val language = getSystemLanguage()
+
+        val telephony = getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
+        if (telephony.phoneType == TelephonyManager.PHONE_TYPE_GSM) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                val cellInfo = telephony.allCellInfo?.firstOrNull { it is CellInfoGsm } as? CellInfoGsm
+                if (cellInfo == null) {
+                    viewModel.fetchLocation(language)
+                } else {
+                    val cellIdentity = cellInfo.cellIdentity
+                    viewModel.fetchLocation(
+                        language, cellIdentity.cid, cellIdentity.lac, cellIdentity.mcc, cellIdentity.mnc
+                    )
+                }
+            } else {
+                val cellInfo = telephony.cellLocation as? GsmCellLocation
+                if (cellInfo == null) {
+                    viewModel.fetchLocation(language)
+                } else {
+                    viewModel.fetchLocation(language, cellInfo.cid, cellInfo.lac, telephony.simOperator)
+                }
+            }
+        } else {
+            viewModel.fetchLocation(language)
+        }
+
+    }
+
+    private fun getSystemLanguage(): Language {
+        val currentLocale = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            resources.configuration.locales.get(0)
+        } else {
+            resources.configuration.locale
+        }
+
+        return defineLanguage(currentLocale.language)
     }
 
     private fun showLocationPermissionReasonDialog() {
