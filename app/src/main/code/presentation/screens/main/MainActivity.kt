@@ -216,7 +216,7 @@ class MainActivity : AppCompatActivity() {
         val title = getString(R.string.fetching_data_interner_error_title)
         val message = getString(R.string.internet_connection_error_message)
 
-        val changeStateLambda: () -> Unit = { currentState = currentState.performTransition(Event.LocationDisabled) }
+        val changeStateLambda: () -> Unit = { currentState = currentState.performTransition(Event.InternetDisabled) }
 
         showErrorDialog(title, message, onOkClick = changeStateLambda, onRetryClick = changeStateLambda)
     }
