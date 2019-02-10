@@ -19,5 +19,9 @@
     <!-- Main screen -->
     <string name="wardrobe">Гардероб</string>
     <string name="settings">Настройки</string>
+    <string name="location_permission_reason">Нам нужно ваше разрешение на местоположение, чтобы узнать погоду</string>
+    <string name="permit">Разрешить</string>
+    <string name="location_error">Ошибка загрузки местоположения</string>
+    <string name="fetching_data_interner_error_title">Ошибка загрузки данных</string>
 
 </resources>

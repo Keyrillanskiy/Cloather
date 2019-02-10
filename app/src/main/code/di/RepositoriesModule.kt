@@ -1,6 +1,8 @@
 package di
 
+import data.repositories.implementations.LocationRepositoryImpl
 import data.repositories.implementations.UserRepositoryImpl
+import data.repositories.interfaces.LocationRepository
 import data.repositories.interfaces.UserRepository
 import org.koin.dsl.module.module
 
@@ -13,4 +15,5 @@ import org.koin.dsl.module.module
 
 val repositoriesModule = module {
     factory<UserRepository> { UserRepositoryImpl(get()) }
+    factory<LocationRepository> { LocationRepositoryImpl(get()) }
 }

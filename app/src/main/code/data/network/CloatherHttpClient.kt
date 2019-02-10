@@ -45,10 +45,10 @@ class CloatherHttpClient {
             .build()
     }
 
-    private fun configLoggingInterceptor(isDebugging: Boolean): Interceptor {
-        return HttpLoggingInterceptor().apply {
-            level = if (isDebugging) HttpLoggingInterceptor.Level.BODY else HttpLoggingInterceptor.Level.NONE
-        }
-    }
+}
 
+fun configLoggingInterceptor(isDebugging: Boolean): Interceptor {
+    return HttpLoggingInterceptor().apply {
+        level = if (isDebugging) HttpLoggingInterceptor.Level.BODY else HttpLoggingInterceptor.Level.NONE
+    }
 }
