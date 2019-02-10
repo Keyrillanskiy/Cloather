@@ -4,13 +4,16 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import data.preferences.Preferences
+import data.repositories.interfaces.WardrobeRepository
 import data.repositories.interfaces.WeatherRepository
 import data.useCases.interfaces.LocationUseCase
 import domain.models.responses.LocationResponse
+import domain.models.responses.Thing
 import domain.models.responses.WeatherResponse
 import domain.models.values.Language
 import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.functions.BiFunction
 import io.reactivex.rxkotlin.addTo
 import presentation.common.Response
 import presentation.common.failure
@@ -28,6 +31,7 @@ class MainViewModel(
     private val preferences: Preferences,
     private val locationUseCase: LocationUseCase,
     private val weatherRepository: WeatherRepository,
+    private val wardrobeRepository: WardrobeRepository,
     private val schedulers: SchedulersFacade
 ) : ViewModel() {
 
@@ -37,15 +41,17 @@ class MainViewModel(
     val locationLiveData: LiveData<Response<LocationResponse>>
         get() = _locationLiveData
 
-    private val _weatherLiveData = MutableLiveData<Response<WeatherResponse>>()
-    val weatherLiveData: LiveData<Response<WeatherResponse>>
-        get() = _weatherLiveData
+    private val _weatherAndWhatToWearLiveData = MutableLiveData<Response<Pair<WeatherResponse, List<Thing>>>>()
+    val weatherAndWhatToWearLiveData: LiveData<Response<Pair<WeatherResponse, List<Thing>>>>
+        get() = _weatherAndWhatToWearLiveData
 
     fun isFirstLaunch() = preferences.isFirstLaunch
 
     fun isUserAuthorized() = preferences.isUserAuthorized()
 
     fun isGenderUndefined() = preferences.isGenderUndefined()
+
+    fun getUserGender() = preferences.gender
 
     fun fetchLocation(
         language: Language,
@@ -77,16 +83,20 @@ class MainViewModel(
             .addTo(disposables)
     }
 
-    fun fetchWeather(latitude: Double, longitude: Double) {
-        weatherRepository.fetchWeather(latitude, longitude)
+    fun fetchWeatherAndWhatToWear(latitude: Double, longitude: Double) {
+        Single.zip(
+            weatherRepository.fetchWeather(latitude, longitude),
+            wardrobeRepository.fetchWhatToWear(latitude, longitude, preferences.token!!),
+            BiFunction { weather: WeatherResponse, whatToWear: List<Thing> -> weather to whatToWear }
+        )
             .subscribeOn(schedulers.io)
             .observeOn(schedulers.ui)
-            .doOnSubscribe { _weatherLiveData.value = Response.loading() }
+            .doOnSubscribe { _weatherAndWhatToWearLiveData.value = Response.loading() }
             .subscribe(
-                { _weatherLiveData.value = Response.success(it) },
+                { _weatherAndWhatToWearLiveData.value = Response.success(it) },
                 {
                     Timber.w(it)
-                    _weatherLiveData.value = Response.failure(it)
+                    _weatherAndWhatToWearLiveData.value = Response.failure(it)
                 }
             )
             .addTo(disposables)

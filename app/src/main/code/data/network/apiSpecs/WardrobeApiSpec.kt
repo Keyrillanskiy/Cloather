@@ -29,9 +29,9 @@ interface WardrobeApiSpec {
 
     @GET("/api/whattowear")
     fun fetchWhatToWear(
-        @Query("lat") lat: Double?,
-        @Query("lon") lon: Double?,
-        @Query("googleToken") token: String?
+        @Query("lat") latitude: Double,
+        @Query("lon") longitude: Double,
+        @Query("token") token: String
     ): Single<List<Thing>>
 
     @PUT("/api/user/{id}/defaultwardrobe")

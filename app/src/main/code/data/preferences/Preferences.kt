@@ -87,9 +87,9 @@ class Preferences(private val context: Context) {
                 .apply()
         }
 
-    private var token: String?
+    var token: String?
         get() = prefs.getString(PREF_TOKEN, null)
-        set(value) {
+        private set(value) {
             prefs.edit()
                 .putString(PREF_TOKEN, value)
                 .apply()

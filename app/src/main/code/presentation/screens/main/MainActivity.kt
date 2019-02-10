@@ -5,6 +5,8 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.drawable.Drawable
+import android.graphics.drawable.LayerDrawable
 import android.os.Build
 import android.os.Bundle
 import android.telephony.CellInfoGsm
@@ -12,14 +14,22 @@ import android.telephony.TelephonyManager
 import android.telephony.gsm.GsmCellLocation
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
+import com.bumptech.glide.Glide
 import com.github.keyrillanskiy.cloather.R
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
 import com.google.android.gms.tasks.Task
 import domain.models.exceptions.UiException
+import domain.models.responses.Thing
+import domain.models.values.Gender
 import domain.models.values.Language
 import domain.models.values.defineLanguage
 import extensions.toast
+import io.reactivex.Single
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxkotlin.addTo
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import presentation.common.Failure
@@ -30,8 +40,10 @@ import presentation.screens.auth.AuthActivity
 import presentation.screens.gender.GenderActivity
 import presentation.screens.intro.IntroActivity
 import presentation.share.ErrorDialog
+import timber.log.Timber
 import utils.NetUtils
 import utils.PermissionUtils
+import utils.serverBaseUrl
 import kotlin.properties.Delegates
 
 
@@ -45,6 +57,7 @@ class MainActivity : AppCompatActivity() {
 
     private val viewModel by viewModel<MainViewModel>()
     private lateinit var viewHolder: MainViewHolder
+    private val disposables = CompositeDisposable()
     private var currentState by Delegates.observable<FiniteState<Event>>(
         WithoutLocationPermissionState(),
         onChange = { _, old, new -> handleStateChange(new, old) }
@@ -101,6 +114,11 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    override fun onDestroy() {
+        disposables.clear()
+        super.onDestroy()
+    }
+
     private fun handleStateChange(newState: FiniteState<Event>, oldState: FiniteState<Event>) {
         when (newState) {
             is WithoutLocationPermissionState -> currentState = currentState.getNextState(
@@ -117,7 +135,7 @@ class MainActivity : AppCompatActivity() {
             is LocationEnabledState -> checkInternet()
             is ReadyToFetchDataState -> onReadyToFetch()
             is LoadingGeolocationState -> fetchLocationWithoutGPS()
-            is UpdatingDataState -> viewModel.fetchWeather(newState.latitude, newState.longitude)
+            is UpdatingDataState -> viewModel.fetchWeatherAndWhatToWear(newState.latitude, newState.longitude)
         }
     }
 
@@ -156,13 +174,14 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
-        weatherLiveData.observe(this@MainActivity, Observer { response ->
+        weatherAndWhatToWearLiveData.observe(this@MainActivity, Observer { response ->
             when (response) {
                 is Loading -> viewHolder.showRefreshing()
                 is Success -> {
-                    viewHolder.hideRefreshing()
-                    textTextView.text = "${response.value.city}\n ${response.value.currentWeather.type} ${response
-                        .value.currentWeather.temperature}"
+                    val weather = response.value.first
+                    textTextView.text =
+                            "${weather.city}\n ${weather.currentWeather.type} ${weather.currentWeather.temperature}"
+                    showClothes(response.value.second)
                     currentState = currentState.getNextState(Event.DataFetched)
                 }
                 is Failure -> {
@@ -175,7 +194,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun onReadyToFetch() {
         viewHolder.enableRefreshing()
-        if(isFirstLaunch) {
+        if (isFirstLaunch) {
             isFirstLaunch = false
             currentState = currentState.getNextState(Event.FetchLocation)
         }
@@ -209,6 +228,50 @@ class MainActivity : AppCompatActivity() {
             viewModel.fetchLocation(language)
         }
 
+    }
+
+    //TODO refactor
+    private fun showClothes(clothes: List<Thing>) {
+        Single.fromCallable {
+            val clothesDrawables = mutableListOf<Drawable>()
+
+            val imageWidth = clothesImageView.width
+            val imageHeight = clothesImageView.height
+
+            val sortedClothes = clothes.sortedBy { it.priority }
+
+            sortedClothes.filter { it.modelImages != null }
+                .forEach { thing ->
+                    val gender = viewModel.getUserGender()
+                    val imageUrl = when (gender) {
+                        Gender.MALE -> serverBaseUrl + thing.modelImages?.manImageUrl
+                        Gender.FEMALE -> serverBaseUrl + thing.modelImages?.womanImageUrl
+                        Gender.UNDEFINED -> throw IllegalArgumentException("Inappropriate gender: $gender")
+                    }
+
+                    if (!imageUrl.contains("/things/null.png")) {
+                        val drawable = Glide.with(this)
+                            .asDrawable()
+                            .load(imageUrl)
+                            .submit(imageWidth, imageHeight)
+                            .get()
+
+                        clothesDrawables.add(drawable)
+                    }
+                }
+            clothesDrawables
+        }.subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({ clothesDrawables ->
+                val clothesDrawable = LayerDrawable(clothesDrawables.toTypedArray())
+                clothesImageView.setImageDrawable(clothesDrawable)
+
+                viewHolder.hideRefreshing()
+            }, {
+                Timber.w(it)
+                viewHolder.hideRefreshing()
+            })
+            .addTo(disposables)
     }
 
     private fun getSystemLanguage(): Language {

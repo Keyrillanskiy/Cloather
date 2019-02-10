@@ -23,7 +23,7 @@ data class CategoryItem(var id: String, var name: String, var imageUrl: String?)
 data class Thing(
     val id: String,
     val name: String,
-    val priority: Int?,
+    val priority: Int,
     val onPersonImage: String?,
     val previewImage: String?,
     @JsonProperty("onModel") val modelImages: ModelImages?,
