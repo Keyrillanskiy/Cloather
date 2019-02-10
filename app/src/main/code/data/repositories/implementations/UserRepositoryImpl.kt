@@ -17,7 +17,7 @@ import okhttp3.RequestBody
  */
 class UserRepositoryImpl(httpClient: CloatherHttpClient) : UserRepository {
 
-    private val userApi = httpClient.client.create(UserApiSpec::class.java)
+    private val userApi = httpClient.userApi
 
     override fun authorize(token: TokenWrapper): Single<UserResponse> = userApi.authorize(token)
 

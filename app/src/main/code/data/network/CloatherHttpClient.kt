@@ -2,6 +2,8 @@ package data.network
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.github.keyrillanskiy.cloather.BuildConfig
+import data.network.apiSpecs.UserApiSpec
+import data.network.apiSpecs.WeatherApiSpec
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -25,7 +27,9 @@ class CloatherHttpClient {
         private const val TIMEOUT_WRITE_SEC = 2 * 30L
     }
 
-    val client by lazy { configRetrofit(serverBaseUrl, BuildConfig.DEBUG) }
+    private val client by lazy { configRetrofit(serverBaseUrl, BuildConfig.DEBUG) }
+    val userApi: UserApiSpec by lazy { client.create(UserApiSpec::class.java) }
+    val weatherApi: WeatherApiSpec by lazy { client.create(WeatherApiSpec::class.java) }
 
     private fun configRetrofit(baseUrl: String, isDebugging: Boolean): Retrofit {
         return Retrofit.Builder()

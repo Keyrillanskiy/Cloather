@@ -15,7 +15,6 @@ import org.koin.dsl.module.module
  * @author Keyrillanskiy
  * @since 18.01.2019, 21:16.
  */
-
 val useCasesModule = module {
     factory<UserUseCase> { UserUseCaseImpl(get(), UserMapperImpl()) }
     factory<LocationUseCase> { LocationUseCaseImpl(get(), LocationRequestDataMapperImpl()) }

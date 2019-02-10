@@ -12,7 +12,6 @@ import utils.SchedulersFacade
  * @author Keyrillanskiy
  * @since 16.01.2019, 21:56.
  */
-
 val commonModule = module {
     single { CloatherHttpClient() }
     single { SchedulersFacade() }

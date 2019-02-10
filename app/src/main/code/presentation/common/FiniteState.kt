@@ -7,5 +7,5 @@ package presentation.common
  * @since 06.02.2019, 16:30.
  */
 interface FiniteState<E> {
-    fun performTransition(event: E): FiniteState<E>
+    fun getNextState(event: E): FiniteState<E>
 }

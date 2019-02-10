@@ -2,6 +2,8 @@ package presentation.screens.main
 
 import android.view.ViewGroup
 import com.github.keyrillanskiy.cloather.R
+import extensions.disable
+import extensions.enable
 import kotlinx.android.synthetic.main.activity_main.view.*
 import presentation.common.BaseViewHolder
 
@@ -11,6 +13,7 @@ import presentation.common.BaseViewHolder
  */
 class MainViewHolder(private val rootView: ViewGroup) : BaseViewHolder(rootView) {
 
+    var onRefresh: (() -> Unit)? = null
     var onWardrobeClick: (() -> Unit)? = null
     var onSettingsClick: (() -> Unit)? = null
 
@@ -27,8 +30,23 @@ class MainViewHolder(private val rootView: ViewGroup) : BaseViewHolder(rootView)
                 }
                 true
             }
+
+            mainRefreshLayout.setOnRefreshListener { onRefresh?.invoke() }
         }
 
         return this
     }
+
+    fun showRefreshing() {
+        rootView.mainRefreshLayout.isRefreshing = true
+    }
+
+    fun hideRefreshing() {
+        rootView.mainRefreshLayout.isRefreshing = false
+    }
+
+    fun enableRefreshing() = rootView.mainRefreshLayout.enable()
+
+    fun disableRefreshing() = rootView.mainRefreshLayout.disable()
+
 }

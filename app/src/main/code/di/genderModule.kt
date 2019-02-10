@@ -10,7 +10,6 @@ import presentation.screens.gender.GenderViewModel
  * @author Keyrillanskiy
  * @since 19.01.2019, 17:42.
  */
-
 val genderModule = module {
     viewModel { GenderViewModel(get(), get(), get()) }
 }

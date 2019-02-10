@@ -1,6 +1,6 @@
 package data.network.apiSpecs
 
-import domain.models.responses.Weather
+import domain.models.responses.WeatherResponse
 import io.reactivex.Single
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -13,7 +13,15 @@ import retrofit2.http.Query
  */
 interface WeatherApiSpec {
 
+    /**
+     * Запрос на сервер для получения текущей погоды и прогноза погоды.
+     *
+     * @param latitude Широта.
+     * @param longitude Долгота.
+     *
+     * @return Класс с текущей погодой и прогнозом погоды.
+     */
     @GET("/api/weather/yandex")
-    fun fetchWeather(@Query("lat") lat: Double?, @Query("lon") lon: Double?): Single<Weather>
+    fun fetchWeather(@Query("lat") latitude: Double, @Query("lon") longitude: Double): Single<WeatherResponse>
 
 }

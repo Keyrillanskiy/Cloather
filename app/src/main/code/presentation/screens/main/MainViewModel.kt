@@ -4,8 +4,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import data.preferences.Preferences
+import data.repositories.interfaces.WeatherRepository
 import data.useCases.interfaces.LocationUseCase
 import domain.models.responses.LocationResponse
+import domain.models.responses.WeatherResponse
 import domain.models.values.Language
 import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
@@ -25,6 +27,7 @@ import utils.SchedulersFacade
 class MainViewModel(
     private val preferences: Preferences,
     private val locationUseCase: LocationUseCase,
+    private val weatherRepository: WeatherRepository,
     private val schedulers: SchedulersFacade
 ) : ViewModel() {
 
@@ -33,6 +36,10 @@ class MainViewModel(
     private val _locationLiveData = MutableLiveData<Response<LocationResponse>>()
     val locationLiveData: LiveData<Response<LocationResponse>>
         get() = _locationLiveData
+
+    private val _weatherLiveData = MutableLiveData<Response<WeatherResponse>>()
+    val weatherLiveData: LiveData<Response<WeatherResponse>>
+        get() = _weatherLiveData
 
     fun isFirstLaunch() = preferences.isFirstLaunch
 
@@ -48,15 +55,15 @@ class MainViewModel(
         operatorCode: Int? = null
     ) {
         locationUseCase.fetchLocation(language, cellId, lac, countryCode, operatorCode)
-            .observe()
+            .observeLocation()
     }
 
     fun fetchLocation(language: Language, cellId: Int? = null, lac: Int? = null, simOperator: String? = null) {
         locationUseCase.fetchLocation(language, cellId, lac, simOperator)
-            .observe()
+            .observeLocation()
     }
 
-    private fun Single<LocationResponse>.observe() {
+    private fun Single<LocationResponse>.observeLocation() {
         subscribeOn(schedulers.io)
             .observeOn(schedulers.ui)
             .doOnSubscribe { _locationLiveData.value = Response.loading() }
@@ -65,6 +72,21 @@ class MainViewModel(
                 {
                     Timber.w(it)
                     _locationLiveData.value = Response.failure(it)
+                }
+            )
+            .addTo(disposables)
+    }
+
+    fun fetchWeather(latitude: Double, longitude: Double) {
+        weatherRepository.fetchWeather(latitude, longitude)
+            .subscribeOn(schedulers.io)
+            .observeOn(schedulers.ui)
+            .doOnSubscribe { _weatherLiveData.value = Response.loading() }
+            .subscribe(
+                { _weatherLiveData.value = Response.success(it) },
+                {
+                    Timber.w(it)
+                    _weatherLiveData.value = Response.failure(it)
                 }
             )
             .addTo(disposables)

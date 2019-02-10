@@ -16,6 +16,7 @@ import com.github.keyrillanskiy.cloather.R
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
 import com.google.android.gms.tasks.Task
+import domain.models.exceptions.UiException
 import domain.models.values.Language
 import domain.models.values.defineLanguage
 import extensions.toast
@@ -29,7 +30,6 @@ import presentation.screens.auth.AuthActivity
 import presentation.screens.gender.GenderActivity
 import presentation.screens.intro.IntroActivity
 import presentation.share.ErrorDialog
-import timber.log.Timber
 import utils.NetUtils
 import utils.PermissionUtils
 import kotlin.properties.Delegates
@@ -51,6 +51,8 @@ class MainActivity : AppCompatActivity() {
     )
     private lateinit var fusedLocationClient: FusedLocationProviderClient
 
+    private var isFirstLaunch = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.AppTheme_NoActionBar) // потому что по умолчанию стоит тема для splash
         super.onCreate(savedInstanceState)
@@ -70,6 +72,7 @@ class MainActivity : AppCompatActivity() {
                 finish()
             }
             else -> {
+                isFirstLaunch = savedInstanceState == null
                 initMainScreen()
             }
         }
@@ -79,9 +82,9 @@ class MainActivity : AppCompatActivity() {
         data?.let {
             if (requestCode == RC_CHECK_SETTINGS) {
                 currentState = if (resultCode == Activity.RESULT_OK) {
-                    currentState.performTransition(Event.LocationEnabled)
+                    currentState.getNextState(Event.LocationEnabled)
                 } else {
-                    currentState.performTransition(Event.LocationDisabled)
+                    currentState.getNextState(Event.LocationDisabled)
                 }
             }
         }
@@ -92,29 +95,29 @@ class MainActivity : AppCompatActivity() {
                     && grantResults.isNotEmpty()
                     && grantResults.all { it == PackageManager.PERMISSION_GRANTED })
         ) {
-            currentState.performTransition(Event.LocationPermissionGranted)
+            currentState.getNextState(Event.LocationPermissionGranted)
         } else {
-            currentState.performTransition(Event.LocationPermissionRejected)
+            currentState.getNextState(Event.LocationPermissionRejected)
         }
     }
 
     private fun handleStateChange(newState: FiniteState<Event>, oldState: FiniteState<Event>) {
         when (newState) {
-            is WithoutLocationPermissionState -> currentState = currentState.performTransition(
+            is WithoutLocationPermissionState -> currentState = currentState.getNextState(
                 Event.RequestLocationPermission
             )
-//            is WithoutLocationPermissionState -> currentState = currentState.performTransition(
+//            is WithoutLocationPermissionState -> currentState = currentState.getNextState(
 //                Event.RequestLocationPermission
 //            )
-            is LocationPermissionRequestedState -> currentState = currentState.performTransition(Event.LocationPermissionGranted)
+            is LocationPermissionRequestedState -> currentState =
+                    currentState.getNextState(Event.LocationPermissionGranted)
 //            is LocationPermissionRequestedState -> showLocationPermissionReasonDialog()
-            is WithLocationPermissionState -> currentState = currentState.performTransition(Event.LocationEnabled)
+            is WithLocationPermissionState -> currentState = currentState.getNextState(Event.LocationEnabled)
 //            is WithLocationPermissionState -> enableLocationIfNeed()
             is LocationEnabledState -> checkInternet()
-            is ReadyToFetchDataState -> currentState = currentState.performTransition(Event.FetchLocation)
+            is ReadyToFetchDataState -> onReadyToFetch()
             is LoadingGeolocationState -> fetchLocationWithoutGPS()
-            is UpdatingDataState -> onUpdatingData(newState.latitude, newState.longitude)
-            is DataFetchErrorState -> handleError(newState.throwable)
+            is UpdatingDataState -> viewModel.fetchWeather(newState.latitude, newState.longitude)
         }
     }
 
@@ -124,6 +127,9 @@ class MainActivity : AppCompatActivity() {
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
         viewHolder = MainViewHolder(mainContent).setup {
+            disableRefreshing()
+
+            onRefresh = { currentState = currentState.getNextState(Event.FetchLocation) }
             onWardrobeClick = { toast("Not implemented") }
             onSettingsClick = { toast("Not implemented") }
         }
@@ -131,22 +137,48 @@ class MainActivity : AppCompatActivity() {
         viewModel.observeData()
 
         // first action with state machine
-        currentState = currentState.performTransition(Event.RequestLocationPermission)
+        currentState = currentState.getNextState(Event.RequestLocationPermission)
     }
 
     private fun MainViewModel.observeData() {
         locationLiveData.observe(this@MainActivity, Observer { response ->
             when (response) {
-                is Loading -> {
-                    /* nothing */
-                }
+                is Loading -> viewHolder.showRefreshing()
                 is Success -> {
-                    Timber.d(response.toString())
-                    toast("${response.value.position.latitude} ${response.value.position.longitude}")
+                    val latitude = response.value.position.latitude
+                    val longitude = response.value.position.longitude
+                    currentState = currentState.getNextState(Event.FetchData(latitude, longitude))
                 }
-                is Failure -> showLocationError()
+                is Failure -> {
+                    viewHolder.hideRefreshing()
+                    handleError(UiException.FetchLocationException(response.error))
+                }
             }
         })
+
+        weatherLiveData.observe(this@MainActivity, Observer { response ->
+            when (response) {
+                is Loading -> viewHolder.showRefreshing()
+                is Success -> {
+                    viewHolder.hideRefreshing()
+                    textTextView.text = "${response.value.city}\n ${response.value.currentWeather.type} ${response
+                        .value.currentWeather.temperature}"
+                    currentState = currentState.getNextState(Event.DataFetched)
+                }
+                is Failure -> {
+                    viewHolder.hideRefreshing()
+                    handleError(UiException.FetchDataException(response.error))
+                }
+            }
+        })
+    }
+
+    private fun onReadyToFetch() {
+        viewHolder.enableRefreshing()
+        if(isFirstLaunch) {
+            isFirstLaunch = false
+            currentState = currentState.getNextState(Event.FetchLocation)
+        }
     }
 
     @SuppressLint("MissingPermission")
@@ -191,14 +223,14 @@ class MainActivity : AppCompatActivity() {
 
     private fun showLocationPermissionReasonDialog() {
         if (PermissionUtils.isLocationPermissionGranted(this)) {
-            currentState = currentState.performTransition(Event.LocationPermissionGranted)
+            currentState = currentState.getNextState(Event.LocationPermissionGranted)
         } else {
             supportFragmentManager.findFragmentByTag(RequestLocationDialog.TAG) as? RequestLocationDialog
                 ?: RequestLocationDialog()
                     .also {
                         it.onPermitClick = { PermissionUtils.requestLocationPermission(this, RC_LOCATION_PERMISSION) }
                         it.onCancelClick = {
-                            currentState = currentState.performTransition(Event.LocationPermissionRejected)
+                            currentState = currentState.getNextState(Event.LocationPermissionRejected)
                         }
                         it.showNow(supportFragmentManager, RequestLocationDialog.TAG)
                     }
@@ -209,16 +241,34 @@ class MainActivity : AppCompatActivity() {
         val title = getString(R.string.location_error)
         val message = getString(R.string.unknown_error)
 
-        showErrorDialog(title, message)
+        showErrorDialog(title, message, onRetryClick = {
+            currentState = currentState.getNextState(Event.FetchLocation)
+        })
     }
 
     private fun showInternetDisabledError() {
         val title = getString(R.string.fetching_data_interner_error_title)
         val message = getString(R.string.internet_connection_error_message)
 
-        val changeStateLambda: () -> Unit = { currentState = currentState.performTransition(Event.InternetDisabled) }
+        val changeStateLambda: () -> Unit = { currentState = currentState.getNextState(Event.InternetDisabled) }
 
         showErrorDialog(title, message, onOkClick = changeStateLambda, onRetryClick = changeStateLambda)
+    }
+
+    private fun showFetchDataError() {
+        val title = getString(R.string.fetching_data_interner_error_title)
+        val message = getString(R.string.unknown_error)
+
+        showErrorDialog(title, message, onRetryClick = {
+            currentState = currentState.getNextState(Event.FetchLocation)
+        })
+    }
+
+    private fun showUnknownError() {
+        val title = getString(R.string.fetching_data_interner_error_title)
+        val message = getString(R.string.unknown_error)
+
+        showErrorDialog(title, message)
     }
 
     private fun showErrorDialog(
@@ -236,7 +286,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun enableLocationIfNeed() {
         checkLocation(
-            onEnabled = { currentState = currentState.performTransition(Event.LocationEnabled) },
+            onEnabled = { currentState = currentState.getNextState(Event.LocationEnabled) },
             onDisabled = { exception ->
                 if (exception is ResolvableApiException) {
                     exception.startResolutionForResult(this@MainActivity, RC_CHECK_SETTINGS)
@@ -267,7 +317,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun checkInternet() {
         if (NetUtils.hasNetConnection()) {
-            currentState = currentState.performTransition(Event.InternetEnabled)
+            currentState = currentState.getNextState(Event.InternetEnabled)
         } else {
             showInternetDisabledError()
         }
@@ -276,7 +326,7 @@ class MainActivity : AppCompatActivity() {
     @SuppressLint("MissingPermission")
     private fun fetchGeolocation() {
         if (!PermissionUtils.isLocationPermissionGranted(this)) {
-            currentState = currentState.performTransition(Event.LocationPermissionRemoved)
+            currentState = currentState.getNextState(Event.LocationPermissionRemoved)
             return
         }
         checkLocation(
@@ -284,30 +334,30 @@ class MainActivity : AppCompatActivity() {
                 fusedLocationClient.lastLocation
                     .addOnSuccessListener { location ->
                         if (location != null) {
-                            currentState = currentState.performTransition(
+                            currentState = currentState.getNextState(
                                 Event.FetchData(location.latitude, location.longitude)
                             )
                         } else {
-                            currentState = currentState.performTransition(Event.FetchLocationError())
+                            handleError(UiException.FetchLocationException())
                         }
                     }
                     .addOnFailureListener {
-                        currentState = currentState.performTransition(Event.FetchLocationError(it))
+                        handleError(UiException.FetchLocationException(throwable = it))
                     }
             },
-            onDisabled = { currentState = currentState.performTransition(Event.LocationDisabled) }
+            onDisabled = { currentState = currentState.getNextState(Event.LocationDisabled) }
         )
 
     }
 
-    private fun onUpdatingData(latitude: Double, longitude: Double) {
-        toast("$latitude $longitude")
-        //currentState = currentState.performTransition(Event.DataFetched)
-    }
+    private fun handleError(exception: UiException) {
+        when (exception) {
+            is UiException.FetchLocationException -> showLocationError()
+            is UiException.FetchDataException -> showFetchDataError()
+            is UiException.UnknownException -> showUnknownError()
+        }
 
-    private fun handleError(throwable: Throwable?) {
-        Timber.w(throwable)
-        toast("error: ${throwable?.localizedMessage}")
+        currentState = currentState.getNextState(Event.DataFetchErrorHandled)
     }
 
     companion object {

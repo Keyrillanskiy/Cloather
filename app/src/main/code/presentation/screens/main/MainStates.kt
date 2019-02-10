@@ -20,16 +20,14 @@ sealed class Event {
     object InternetDisabled : Event()
     object InternetEnabled : Event()
     object FetchLocation : Event()
-    data class FetchLocationError(val t: Throwable? = null) : Event()
     data class FetchData(val latitude: Double, val longitude: Double) : Event()
     object DataFetched : Event()
-    data class DataFetchError(val t: Throwable) : Event()
     object DataFetchErrorHandled : Event()
 }
 
 // initial state
 class WithoutLocationPermissionState : FiniteState<Event> {
-    override fun performTransition(event: Event): FiniteState<Event> {
+    override fun getNextState(event: Event): FiniteState<Event> {
         return when (event) {
             is Event.LocationPermissionAlreadyGranted -> WithoutLocationPermissionState()
             is Event.RequestLocationPermission -> LocationPermissionRequestedState()
@@ -39,7 +37,7 @@ class WithoutLocationPermissionState : FiniteState<Event> {
 }
 
 class LocationPermissionRequestedState : FiniteState<Event> {
-    override fun performTransition(event: Event): FiniteState<Event> {
+    override fun getNextState(event: Event): FiniteState<Event> {
         return when (event) {
             is Event.LocationPermissionGranted -> WithLocationPermissionState()
             is Event.LocationPermissionRejected -> WithoutLocationPermissionState()
@@ -49,7 +47,7 @@ class LocationPermissionRequestedState : FiniteState<Event> {
 }
 
 class WithLocationPermissionState : FiniteState<Event> {
-    override fun performTransition(event: Event): FiniteState<Event> {
+    override fun getNextState(event: Event): FiniteState<Event> {
         return when (event) {
             is Event.LocationDisabled -> WithLocationPermissionState()
             is Event.LocationEnabled -> LocationEnabledState()
@@ -59,7 +57,7 @@ class WithLocationPermissionState : FiniteState<Event> {
 }
 
 class LocationEnabledState : FiniteState<Event> {
-    override fun performTransition(event: Event): FiniteState<Event> {
+    override fun getNextState(event: Event): FiniteState<Event> {
         return when (event) {
             is Event.InternetDisabled -> LocationEnabledState()
             is Event.InternetEnabled -> ReadyToFetchDataState()
@@ -69,7 +67,7 @@ class LocationEnabledState : FiniteState<Event> {
 }
 
 class ReadyToFetchDataState : FiniteState<Event> {
-    override fun performTransition(event: Event): FiniteState<Event> {
+    override fun getNextState(event: Event): FiniteState<Event> {
         return when (event) {
             is Event.InternetDisabled -> ReadyToFetchDataState()
             is Event.FetchLocation -> LoadingGeolocationState()
@@ -78,32 +76,24 @@ class ReadyToFetchDataState : FiniteState<Event> {
     }
 }
 
-class DataFetchErrorState(val throwable: Throwable?) : FiniteState<Event> {
-    override fun performTransition(event: Event): FiniteState<Event> {
+class LoadingGeolocationState : FiniteState<Event> {
+    override fun getNextState(event: Event): FiniteState<Event> {
         return when (event) {
+            is Event.FetchData -> UpdatingDataState(event.latitude, event.longitude)
+            is Event.FetchLocation -> LoadingGeolocationState()
+            is Event.LocationDisabled -> WithLocationPermissionState()
+            is Event.LocationPermissionRemoved -> WithoutLocationPermissionState()
             is Event.DataFetchErrorHandled -> ReadyToFetchDataState()
             else -> throw IllegalStateException("Invalid event $event passed to state $this")
         }
     }
 }
 
-class LoadingGeolocationState : FiniteState<Event> {
-    override fun performTransition(event: Event): FiniteState<Event> {
-        return when (event) {
-            is Event.FetchData -> UpdatingDataState(event.latitude, event.longitude)
-            is Event.FetchLocationError -> DataFetchErrorState(event.t)
-            is Event.LocationDisabled -> WithLocationPermissionState()
-            is Event.LocationPermissionRemoved -> WithoutLocationPermissionState()
-            else -> throw IllegalStateException("Invalid event $event passed to state $this")
-        }
-    }
-}
-
 class UpdatingDataState(val latitude: Double, val longitude: Double) : FiniteState<Event> {
-    override fun performTransition(event: Event): FiniteState<Event> {
+    override fun getNextState(event: Event): FiniteState<Event> {
         return when (event) {
-            is Event.DataFetched -> ReadyToFetchDataState()
-            is Event.DataFetchError -> DataFetchErrorState(event.t)
+            is Event.DataFetched, Event.DataFetchErrorHandled -> ReadyToFetchDataState()
+            is Event.FetchLocation -> LoadingGeolocationState()
             else -> throw IllegalStateException("Invalid event $event passed to state $this")
         }
     }

@@ -11,7 +11,7 @@ import java.util.*
  * @since 15.01.2019, 20:45.
  */
 
-data class Weather(
+data class WeatherResponse(
     val city: String,
     @JsonProperty("current") val currentWeather: CurrentWeather,
     val forecast: List<Forecast>
