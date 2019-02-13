@@ -1,6 +1,7 @@
 package data.logging
 
 import android.util.Log
+import com.crashlytics.android.Crashlytics
 import timber.log.Timber
 
 /**
@@ -22,9 +23,10 @@ class ReleaseLogTree : Timber.Tree() {
 
     override fun log(priority: Int, tag: String?, message: String, t: Throwable?) {
         if (priority == Log.ERROR || priority == Log.WARN || priority == Log.ASSERT) {
-            //TODO логировать сообщение и исключение (после добавления системы crash reporting'а)
+            Crashlytics.log(priority, tag, message)
+            Crashlytics.logException(t)
         } else if (priority == Log.INFO) {
-            //TODO логировать сообщение (после добавления системы crash reporting'а)
+            Crashlytics.log(priority, tag, message)
         }
     }
 

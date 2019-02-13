@@ -1,9 +1,12 @@
 package presentation.screens.main
 
 import android.view.ViewGroup
+import com.crashlytics.android.Crashlytics
+import com.github.keyrillanskiy.cloather.BuildConfig
 import com.github.keyrillanskiy.cloather.R
 import extensions.disable
 import extensions.enable
+import extensions.visible
 import kotlinx.android.synthetic.main.activity_main.view.*
 import presentation.common.BaseViewHolder
 
@@ -32,6 +35,11 @@ class MainViewHolder(private val rootView: ViewGroup) : BaseViewHolder(rootView)
             }
 
             mainRefreshLayout.setOnRefreshListener { onRefresh?.invoke() }
+
+            if (BuildConfig.BUILD_TYPE == "debugCrashes") {
+                crashButton.visible()
+                crashButton.setOnClickListener { Crashlytics.getInstance().crash() }
+            }
         }
 
         return this

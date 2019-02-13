@@ -2,6 +2,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'com.google.gms.google-services'
+apply plugin: 'io.fabric'
 apply from: "${rootDir}/git-version.gradle"
 apply from: '../dependencies.gradle'
 
@@ -31,6 +32,12 @@ android {
         }
         debugLeak {
             versionNameSuffix "-Leak_${gitRevision}"
+            debuggable = true
+            minifyEnabled false
+            signingConfig signingConfigs.debug
+        }
+        debugCrashes {
+            versionNameSuffix "-Crashes_${gitRevision}"
             debuggable = true
             minifyEnabled false
             signingConfig signingConfigs.debug
@@ -93,6 +100,7 @@ dependencies {
 
     debugImplementation debuggingDependenciesForRelease.values()
     debugLeakImplementation debuggingDependencies.values()
+    debugCrashesImplementation debuggingDependenciesForRelease.values()
     releaseImplementation debuggingDependenciesForRelease.values()
 
     testImplementation testingDependencies.values()

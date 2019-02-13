@@ -56,7 +56,8 @@ ext {
     googleDependencies = [
             firebase: "com.google.firebase:firebase-core:16.0.6",
             auth    : "com.google.android.gms:play-services-auth:16.0.1",
-            location: "com.google.android.gms:play-services-location:16.0.0"
+            location: "com.google.android.gms:play-services-location:16.0.0",
+            crashlytics: "com.crashlytics.sdk.android:crashlytics:2.9.9"
     ]
 
     def koinVersion = '1.0.1'
@@ -72,7 +73,7 @@ ext {
             timber: "com.jakewharton.timber:timber:$timberVersion"
     ]
 
-    def leakCanaryVersion = '1.6.2'
+    def leakCanaryVersion = '1.6.3'
     debuggingDependencies = [
             leakCanary                   : "com.squareup.leakcanary:leakcanary-android:$leakCanaryVersion",
             leakCanaryForSupportFragments: "com.squareup.leakcanary:leakcanary-support-fragment:$leakCanaryVersion"

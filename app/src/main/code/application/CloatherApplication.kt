@@ -3,11 +3,14 @@ package application
 import android.content.Context
 import androidx.multidex.MultiDex
 import androidx.multidex.MultiDexApplication
+import com.crashlytics.android.Crashlytics
+import com.crashlytics.android.core.CrashlyticsCore
 import com.github.keyrillanskiy.cloather.BuildConfig
 import com.squareup.leakcanary.LeakCanary
 import data.logging.DebugLogTree
 import data.logging.ReleaseLogTree
 import di.*
+import io.fabric.sdk.android.Fabric
 import org.koin.android.ext.android.startKoin
 import timber.log.Timber
 import utils.NetUtils
@@ -27,10 +30,23 @@ class CloatherApplication : MultiDexApplication() {
     override fun onCreate() {
         super.onCreate()
 
+        setupCrashReporting()
         setupTimber()
         setupLeakCanary()
         setupDependencyInjection()
         NetUtils.init(this)
+    }
+
+    private fun setupCrashReporting() {
+        val isDisabled = !(BuildConfig.BUILD_TYPE == "release" || BuildConfig.BUILD_TYPE == "debugCrashes")
+        val crashlytics = Crashlytics.Builder()
+            .core(
+                CrashlyticsCore.Builder()
+                    .disabled(isDisabled)
+                    .build()
+            )
+            .build()
+        Fabric.with(this, crashlytics)
     }
 
     private fun setupTimber() {
