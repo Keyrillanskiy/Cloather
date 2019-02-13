@@ -24,6 +24,7 @@ import presentation.share.ErrorDialog
 import presentation.share.ProgressDialog
 import timber.log.Timber
 import utils.NetUtils
+import java.util.*
 import java.util.concurrent.TimeUnit
 
 /**
@@ -39,11 +40,14 @@ class AuthActivity : AppCompatActivity() {
     private val viewModel by viewModel<AuthViewModel>()
     private val disposables = CompositeDisposable()
 
+    private var fragmentsToShow: LinkedList<FragmentToShow>? = null
+    private var isCanShowFragments = true // если вызовется onSaveInstanceState, то нельзя отображать фрагменты
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         if (viewModel.isUserAuthorized()) {
-            if(viewModel.isGenderUndefined()) {
+            if (viewModel.isGenderUndefined()) {
                 GenderActivity.launch(this)
                 finish()
             } else {
@@ -51,7 +55,23 @@ class AuthActivity : AppCompatActivity() {
                 finish()
             }
         } else {
-            initAuthScreen()
+            initAuthScreen(savedInstanceState)
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        isCanShowFragments = true
+
+        fragmentsToShow?.run {
+            forEach { fragment ->
+                when (fragment) {
+                    FragmentToShow.Progress -> showAuthProgress()
+                    is FragmentToShow.Error -> showErrorDialog(fragment.title, fragment.message)
+                }
+            }
+            clear()
         }
     }
 
@@ -63,13 +83,22 @@ class AuthActivity : AppCompatActivity() {
         }
     }
 
+    override fun onSaveInstanceState(outState: Bundle?) {
+        isCanShowFragments = false
+        outState?.putSerializable(KEY_FRAGMENTS_TO_SHOW, fragmentsToShow)
+        super.onSaveInstanceState(outState)
+    }
+
     override fun onDestroy() {
         disposables.dispose()
         super.onDestroy()
     }
 
-    private fun initAuthScreen() {
+    private fun initAuthScreen(savedInstanceState: Bundle?) {
         setContentView(R.layout.activity_auth)
+
+        fragmentsToShow = (savedInstanceState?.getSerializable(KEY_FRAGMENTS_TO_SHOW) as? LinkedList<FragmentToShow>)
+                ?: LinkedList()
 
         authButton.clicks()
             .throttleFirst(800, TimeUnit.MILLISECONDS)
@@ -100,9 +129,14 @@ class AuthActivity : AppCompatActivity() {
     }
 
     private fun showAuthProgress() {
-        supportFragmentManager.findFragmentByTag(ProgressDialog.TAG) as? ProgressDialog
-            ?: ProgressDialog.newInstance(getString(R.string.authorization))
-                .also { it.showNow(supportFragmentManager, ProgressDialog.TAG) }
+        if(isCanShowFragments) {
+            supportFragmentManager.findFragmentByTag(ProgressDialog.TAG) as? ProgressDialog
+                ?: ProgressDialog.newInstance(getString(R.string.authorization))
+                    .also { it.showNow(supportFragmentManager, ProgressDialog.TAG) }
+        } else {
+            fragmentsToShow?.add(FragmentToShow.Progress)
+        }
+
     }
 
     private fun hideAuthProgress() {
@@ -124,13 +158,18 @@ class AuthActivity : AppCompatActivity() {
     }
 
     private fun showErrorDialog(title: String? = null, message: String? = null) {
-        supportFragmentManager.findFragmentByTag(ErrorDialog.TAG) as? ErrorDialog
-            ?: ErrorDialog.newInstance(title, message)
-                .also {
-                    it.onOkClick = { hideAuthProgress() }
-                    it.onRetryClick = { authorize() }
-                    it.showNow(supportFragmentManager, ErrorDialog.TAG)
-                }
+        if(isCanShowFragments) {
+            supportFragmentManager.findFragmentByTag(ErrorDialog.TAG) as? ErrorDialog
+                ?: ErrorDialog.newInstance(title, message)
+                    .also {
+                        it.onOkClick = { hideAuthProgress() }
+                        it.onRetryClick = { authorize() }
+                        it.showNow(supportFragmentManager, ErrorDialog.TAG)
+                    }
+        } else {
+            fragmentsToShow?.add(FragmentToShow.Error(title, message))
+        }
+
     }
 
     private fun AuthViewModel.observeData() {
@@ -175,8 +214,16 @@ class AuthActivity : AppCompatActivity() {
         })
     }
 
+    // Для добавления в очередь отображения, если экран перешел в onSaveInstanceState
+    private sealed class FragmentToShow {
+        object Progress : FragmentToShow()
+        data class Error(val title: String? = null, val message: String? = null) : FragmentToShow()
+    }
+
     companion object {
         private const val RC_SIGN_IN = 1
+
+        private const val KEY_FRAGMENTS_TO_SHOW = "com.github.keyrillanskiy.cloather.key.fragments_to_show"
 
         fun launch(context: Context) {
             context.startActivity(Intent(context, AuthActivity::class.java))

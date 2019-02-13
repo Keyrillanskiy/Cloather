@@ -127,9 +127,7 @@ class MainActivity : AppCompatActivity() {
 //            is WithoutLocationPermissionState -> currentState = currentState.getNextState(
 //                Event.RequestLocationPermission
 //            )
-            is LocationPermissionRequestedState -> currentState =
-                    currentState.getNextState(Event.LocationPermissionGranted)
-//            is LocationPermissionRequestedState -> showLocationPermissionReasonDialog()
+            is LocationPermissionRequestedState -> showLocationPermissionReasonDialog()
             is WithLocationPermissionState -> currentState = currentState.getNextState(Event.LocationEnabled)
 //            is WithLocationPermissionState -> enableLocationIfNeed()
             is LocationEnabledState -> checkInternet()
