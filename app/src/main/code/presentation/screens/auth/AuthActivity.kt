@@ -59,8 +59,8 @@ class AuthActivity : AppCompatActivity() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
+    override fun onResumeFragments() {
+        super.onResumeFragments()
 
         isCanShowFragments = true
 
