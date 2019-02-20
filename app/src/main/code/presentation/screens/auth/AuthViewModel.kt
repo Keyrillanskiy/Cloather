@@ -34,33 +34,9 @@ class AuthViewModel(
         super.onCleared()
     }
 
-    private val _tokenLiveData = SingleLiveData<Response<String>>()
-    val tokenLiveData: LiveData<Response<String>>
-        get() = _tokenLiveData
-
     private val _authLiveData = SingleLiveData<Response<User>>()
     val authLiveData: LiveData<Response<User>>
         get() = _authLiveData
-
-    fun getGoogleToken(context: Context, accountName: String) {
-        Single.fromCallable {
-            GoogleAuthUtil.getToken(
-                context,
-                Account(accountName, GoogleAuthUtil.GOOGLE_ACCOUNT_TYPE),
-                SCOPES
-            )
-
-        }.subscribeOn(schedulers.io)
-            .observeOn(schedulers.ui)
-            .doOnSubscribe { _tokenLiveData.value = Response.loading() }
-            .subscribe(
-                { _tokenLiveData.value = Response.success(it) },
-                {
-                    Timber.w(it)
-                    _tokenLiveData.value = Response.failure(it)
-                }
-            ).addTo(disposables)
-    }
 
     fun authorize(token: String) {
         val tokenWrapper = TokenWrapper(token)
@@ -83,12 +59,5 @@ class AuthViewModel(
     fun isUserAuthorized() = preferences.isUserAuthorized()
 
     fun isGenderUndefined() = preferences.isGenderUndefined()
-
-    private companion object {
-        private const val G_PLUS_SCOPE = "oauth2:https://www.googleapis.com/auth/plus.me"
-        private const val USER_INFO_SCOPE = "https://www.googleapis.com/auth/userinfo.profile"
-        private const val EMAIL_SCOPE = "https://www.googleapis.com/auth/userinfo.email"
-        private const val SCOPES = "$G_PLUS_SCOPE $USER_INFO_SCOPE $EMAIL_SCOPE"
-    }
 
 }

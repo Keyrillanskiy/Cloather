@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.widget.toast
 import androidx.lifecycle.Observer
 import com.google.android.gms.auth.UserRecoverableAuthException
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -14,7 +13,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 import com.jakewharton.rxbinding3.view.clicks
-import extensions.toast
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import kotlinx.android.synthetic.main.activity_auth.*
@@ -82,7 +80,7 @@ class AuthActivity : AppCompatActivity() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == RC_SIGN_IN && resultCode != Activity.RESULT_CANCELED && data != null) {
+        if (requestCode == RC_SIGN_IN && data != null) {
             val task = GoogleSignIn.getSignedInAccountFromIntent(data)
             handleSignInResult(task)
         }
@@ -123,8 +121,7 @@ class AuthActivity : AppCompatActivity() {
 
         val account = GoogleSignIn.getLastSignedInAccount(this)
         if (account != null) {
-            //todo
-            account.idToken?.let { toast(it) }
+            sendGoogleToken(account.idToken)
         } else {
             NetUtils.withNetConnection(
                 onSuccess = { startActivityForResult(signInClient.signInIntent, RC_SIGN_IN) },
@@ -139,16 +136,17 @@ class AuthActivity : AppCompatActivity() {
 
         try {
             val account = signInTask.getResult(ApiException::class.java)
-            account?.idToken?.let { toast(it) }
-            hideAuthProgress() //todo remove
-            //todo
-            //viewModel.getGoogleToken(this, accountName)
+            sendGoogleToken(account?.idToken)
         } catch (e: Exception) {
             Timber.w(e)
             showUnknownAuthError()
             hideAuthProgress()
         }
 
+    }
+
+    private fun sendGoogleToken(idToken: String?) {
+        idToken?.let { viewModel.authorize(it) } ?: throw IllegalArgumentException("google idToken == null")
     }
 
     private fun showAuthProgress() {
@@ -196,33 +194,9 @@ class AuthActivity : AppCompatActivity() {
     }
 
     private fun AuthViewModel.observeData() {
-        tokenLiveData.observe(this@AuthActivity, Observer { response ->
-            when (response) {
-                is Loading -> {
-                    //nothing
-                }
-                is Success -> {
-                    val googleToken = response.value
-                    Timber.d("googleToken = $googleToken")
-                    authorize(googleToken)
-                }
-                is Failure -> {
-                    val error = response.error
-                    if (error is UserRecoverableAuthException) {
-                        startActivityForResult(error.intent, RC_SIGN_IN)
-                    } else {
-                        hideAuthProgress()
-                        showUnknownAuthError()
-                    }
-                }
-            }
-        })
-
         authLiveData.observe(this@AuthActivity, Observer { response ->
             when (response) {
-                is Loading -> {
-                    //nothing
-                }
+                is Loading -> showAuthProgress()
                 is Success -> {
                     cacheUser(response.value)
                     hideAuthProgress()
