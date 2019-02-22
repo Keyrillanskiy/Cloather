@@ -40,8 +40,8 @@ ext {
     ]
 
     jsonDependencies = [
-            jasksonDataBind   : "com.fasterxml.jackson.core:jackson-databind:2.9.6",
-            jasksonAnnotations: "com.fasterxml.jackson.module:jackson-module-kotlin:2.9.7",
+            jasksonDataBind   : "com.fasterxml.jackson.core:jackson-databind:2.9.8",
+            jasksonAnnotations: "com.fasterxml.jackson.module:jackson-module-kotlin:2.9.8",
             jasksonConverter  : "com.squareup.retrofit2:converter-jackson:$retrofitVersion"
     ]
 

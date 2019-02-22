@@ -1,15 +1,17 @@
 package presentation.screens.auth
 
-import android.accounts.AccountManager
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
-import com.github.keyrillanskiy.cloather.R
 import com.google.android.gms.auth.UserRecoverableAuthException
-import com.google.android.gms.common.AccountPicker
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.tasks.Task
 import com.jakewharton.rxbinding3.view.clicks
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
@@ -24,8 +26,10 @@ import presentation.share.ErrorDialog
 import presentation.share.ProgressDialog
 import timber.log.Timber
 import utils.NetUtils
+import utils.googleAuthClientId
 import java.util.*
 import java.util.concurrent.TimeUnit
+
 
 /**
  * Экран авторизации (пока только через google)
@@ -76,10 +80,9 @@ class AuthActivity : AppCompatActivity() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == RC_SIGN_IN && resultCode != Activity.RESULT_CANCELED && data != null) {
-            showAuthProgress()
-            val accountName = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME)
-            viewModel.getGoogleToken(this, accountName)
+        if (requestCode == RC_SIGN_IN && data != null) {
+            val task = GoogleSignIn.getSignedInAccountFromIntent(data)
+            handleSignInResult(task)
         }
     }
 
@@ -95,7 +98,7 @@ class AuthActivity : AppCompatActivity() {
     }
 
     private fun initAuthScreen(savedInstanceState: Bundle?) {
-        setContentView(R.layout.activity_auth)
+        setContentView(com.github.keyrillanskiy.cloather.R.layout.activity_auth)
 
         fragmentsToShow = (savedInstanceState?.getSerializable(KEY_FRAGMENTS_TO_SHOW) as? LinkedList<FragmentToShow>)
                 ?: LinkedList()
@@ -109,29 +112,47 @@ class AuthActivity : AppCompatActivity() {
     }
 
     private fun authorize() {
-        fun startAuthorization() {
-            val chooseAccountIntent = AccountPicker.newChooseAccountIntent(
-                null, null,
-                arrayOf("com.google"),
-                false, null, null, null, null
+
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(googleAuthClientId)
+            .build()
+
+        val signInClient = GoogleSignIn.getClient(this, gso)
+
+        val account = GoogleSignIn.getLastSignedInAccount(this)
+        if (account != null) {
+            sendGoogleToken(account.idToken)
+        } else {
+            NetUtils.withNetConnection(
+                onSuccess = { startActivityForResult(signInClient.signInIntent, RC_SIGN_IN) },
+                onError = { showInternetAuthError() }
             )
-
-            if (chooseAccountIntent.resolveActivity(packageManager) != null) {
-                startActivityForResult(chooseAccountIntent, RC_SIGN_IN)
-            }
         }
-
-        NetUtils.withNetConnection(
-            onSuccess = { startAuthorization() },
-            onError = { showInternetAuthError() }
-        )
 
     }
 
+    private fun handleSignInResult(signInTask: Task<GoogleSignInAccount>) {
+        showAuthProgress()
+
+        try {
+            val account = signInTask.getResult(ApiException::class.java)
+            sendGoogleToken(account?.idToken)
+        } catch (e: Exception) {
+            Timber.w(e)
+            showUnknownAuthError()
+            hideAuthProgress()
+        }
+
+    }
+
+    private fun sendGoogleToken(idToken: String?) {
+        idToken?.let { viewModel.authorize(it) } ?: throw IllegalArgumentException("google idToken == null")
+    }
+
     private fun showAuthProgress() {
-        if(isCanShowFragments) {
+        if (isCanShowFragments) {
             supportFragmentManager.findFragmentByTag(ProgressDialog.TAG) as? ProgressDialog
-                ?: ProgressDialog.newInstance(getString(R.string.authorization))
+                ?: ProgressDialog.newInstance(getString(com.github.keyrillanskiy.cloather.R.string.authorization))
                     .also { it.showNow(supportFragmentManager, ProgressDialog.TAG) }
         } else {
             fragmentsToShow?.add(FragmentToShow.Progress)
@@ -144,21 +165,21 @@ class AuthActivity : AppCompatActivity() {
     }
 
     private fun showInternetAuthError() {
-        val title = getString(R.string.authorization_error_title)
-        val message = getString(R.string.internet_connection_error_message)
+        val title = getString(com.github.keyrillanskiy.cloather.R.string.authorization_error_title)
+        val message = getString(com.github.keyrillanskiy.cloather.R.string.internet_connection_error_message)
 
         showErrorDialog(title, message)
     }
 
     private fun showUnknownAuthError() {
-        val title = getString(R.string.authorization_error_title)
-        val message = getString(R.string.unknown_error)
+        val title = getString(com.github.keyrillanskiy.cloather.R.string.authorization_error_title)
+        val message = getString(com.github.keyrillanskiy.cloather.R.string.unknown_error)
 
         showErrorDialog(title, message)
     }
 
     private fun showErrorDialog(title: String? = null, message: String? = null) {
-        if(isCanShowFragments) {
+        if (isCanShowFragments) {
             supportFragmentManager.findFragmentByTag(ErrorDialog.TAG) as? ErrorDialog
                 ?: ErrorDialog.newInstance(title, message)
                     .also {
@@ -173,33 +194,9 @@ class AuthActivity : AppCompatActivity() {
     }
 
     private fun AuthViewModel.observeData() {
-        tokenLiveData.observe(this@AuthActivity, Observer { response ->
-            when (response) {
-                is Loading -> {
-                    //nothing
-                }
-                is Success -> {
-                    val googleToken = response.value
-                    Timber.d("googleToken = $googleToken")
-                    authorize(googleToken)
-                }
-                is Failure -> {
-                    val error = response.error
-                    if (error is UserRecoverableAuthException) {
-                        startActivityForResult(error.intent, RC_SIGN_IN)
-                    } else {
-                        hideAuthProgress()
-                        showUnknownAuthError()
-                    }
-                }
-            }
-        })
-
         authLiveData.observe(this@AuthActivity, Observer { response ->
             when (response) {
-                is Loading -> {
-                    //nothing
-                }
+                is Loading -> showAuthProgress()
                 is Success -> {
                     cacheUser(response.value)
                     hideAuthProgress()
