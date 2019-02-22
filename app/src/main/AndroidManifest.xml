@@ -46,5 +46,10 @@
 
         </activity>
 
+        <activity
+            android:name="presentation.screens.settings.SettingsActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden"/>
+
     </application>
 </manifest>

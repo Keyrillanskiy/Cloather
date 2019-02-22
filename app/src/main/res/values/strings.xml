@@ -25,4 +25,13 @@
     <string name="location_error">Loading location error</string>
     <string name="fetching_data_interner_error_title">Fetching data error</string>
 
+    <!-- Settings screen -->
+    <string name="logout">Log out</string>
+    <string name="your_gender">Your gender:</string>
+    <string name="male_gender">Male</string>
+    <string name="female_gender">Female</string>
+    <string name="notifications">Notifications</string>
+    <string name="notifications_description">Messages about important weather changes and outfit recommendations</string>
+    <string name="rate_app">Rate app</string>
+
 </resources>
