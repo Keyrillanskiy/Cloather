@@ -64,7 +64,7 @@ class CloatherApplication : MultiDexApplication() {
     private fun setupDependencyInjection() {
         val modules = listOf(
             commonModule, repositoriesModule, useCasesModule, apisModule,
-            authModule, genderModule, mainModule
+            authModule, genderModule, mainModule, settingsModule
         )
         startKoin(this, modules)
     }

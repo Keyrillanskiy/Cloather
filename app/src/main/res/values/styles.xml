@@ -5,4 +5,9 @@
         <item name="contentInsetStartWithNavigation">72dp</item>
     </style>
 
+    <style name="GenderRadioButton">
+        <item name="android:textColor">@color/text_secondary</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
 </resources>

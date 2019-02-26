@@ -8,6 +8,8 @@
     <string name="retry">Retry</string>
     <string name="internet_connection_error_message">Check your internet connection and try again</string>
     <string name="unknown_error">Unknown error</string>
+    <string name="feature_in_development">Feature in development</string>
+    <string name="user_data_corrupted_error">Your user data is corrupted. Authorize again, please.</string>
 
     <!-- Auth screen -->
     <string name="authorization">Authorization</string>
@@ -24,5 +26,15 @@
     <string name="permit">Permit</string>
     <string name="location_error">Loading location error</string>
     <string name="fetching_data_interner_error_title">Fetching data error</string>
+
+    <!-- Settings screen -->
+    <string name="logout">Log out</string>
+    <string name="your_gender">Your gender:</string>
+    <string name="male_gender">Male</string>
+    <string name="female_gender">Female</string>
+    <string name="notifications">Notifications</string>
+    <string name="notifications_description">Messages about important weather changes and outfit recommendations</string>
+    <string name="rate_app">Rate app</string>
+    <string name="upload_settings_error">Upload user settings failed</string>
 
 </resources>

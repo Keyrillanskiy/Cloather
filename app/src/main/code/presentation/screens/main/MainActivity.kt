@@ -39,6 +39,7 @@ import presentation.common.Success
 import presentation.screens.auth.AuthActivity
 import presentation.screens.gender.GenderActivity
 import presentation.screens.intro.IntroActivity
+import presentation.screens.settings.SettingsActivity
 import presentation.share.ErrorDialog
 import timber.log.Timber
 import utils.NetUtils
@@ -147,7 +148,7 @@ class MainActivity : AppCompatActivity() {
 
             onRefresh = { currentState = currentState.getNextState(Event.FetchLocation) }
             onWardrobeClick = { toast("Not implemented") }
-            onSettingsClick = { toast("Not implemented") }
+            onSettingsClick = { SettingsActivity.launch(this@MainActivity) }
         }
 
         viewModel.observeData()

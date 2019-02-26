@@ -19,7 +19,8 @@ class UserMapperImpl : UserMapper {
             gender = userResponse.gender.toGender(),
             preferredWeather = userResponse.preferredWeather.toPreferredWeather(),
             token = userResponse.token,
-            googleAvatarURL = userResponse.googleAvatarURL
+            googleAvatarURL = userResponse.googleAvatarURL,
+            googleEmail = userResponse.googleEmail
         )
     }
 

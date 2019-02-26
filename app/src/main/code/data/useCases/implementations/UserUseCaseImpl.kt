@@ -22,4 +22,6 @@ class UserUseCaseImpl(private val userRepository: UserRepository, private val us
 
     override fun setGender(userId: String, gender: Gender): Completable = userRepository.setGender(userId, gender)
 
+    override fun fetchUser(): Single<User> = userRepository.fetchUser()
+
 }

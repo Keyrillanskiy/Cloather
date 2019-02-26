@@ -15,5 +15,6 @@ data class User(
     val gender: Gender,
     val preferredWeather: PreferredWeather,
     val token: String?,
-    val googleAvatarURL: String?
+    val googleAvatarURL: String?,
+    val googleEmail: String?
 )

@@ -1,5 +1,6 @@
 package di
 
+import data.mappers.implementations.UserMapperImpl
 import data.repositories.implementations.LocationRepositoryImpl
 import data.repositories.implementations.UserRepositoryImpl
 import data.repositories.implementations.WardrobeRepositoryImpl
@@ -17,7 +18,7 @@ import org.koin.dsl.module.module
  * @since 16.01.2019, 21:57.
  */
 val repositoriesModule = module {
-    factory<UserRepository> { UserRepositoryImpl(get()) }
+    factory<UserRepository> { UserRepositoryImpl(get(), get(), UserMapperImpl()) }
     factory<LocationRepository> { LocationRepositoryImpl(get()) }
     factory<WeatherRepository> { WeatherRepositoryImpl(get()) }
     factory<WardrobeRepository> { WardrobeRepositoryImpl(get()) }

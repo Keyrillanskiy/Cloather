@@ -21,5 +21,6 @@ data class UserResponse(
     val gender: String,
     val preferredWeather: String,
     val googleUid: String,
+    val googleEmail: String,
     val googleAvatarURL: String
 )
