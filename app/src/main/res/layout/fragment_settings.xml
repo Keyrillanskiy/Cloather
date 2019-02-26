@@ -92,19 +92,19 @@
                 android:id="@+id/settingsYourGenderTextView"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="14dp"
                 android:text="@string/your_gender"
                 android:textColor="@color/text_primary"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_marginTop="14dp"
+                android:layout_marginStart="16dp"
+                app:layout_constraintStart_toStartOf="parent"/>
 
             <RadioButton
                 android:id="@+id/settingsMaleRadioButton"
                 style="@style/GenderRadioButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
+                android:layout_marginStart="12dp"
                 android:layout_marginTop="14dp"
                 android:layout_marginBottom="16dp"
                 android:text="@string/male_gender"
