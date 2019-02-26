@@ -33,4 +33,11 @@ interface UserUseCase {
      */
     fun setGender(userId: String, gender: Gender): Completable
 
+    /**
+     * Функция для получения пользователя.
+     *
+     * @return Данные пользователя.
+     */
+    fun fetchUser(): Single<User>
+
 }

@@ -1,5 +1,6 @@
 package data.repositories.interfaces
 
+import domain.models.entities.User
 import domain.models.responses.TokenWrapper
 import domain.models.responses.UserResponse
 import domain.models.values.Gender
@@ -32,5 +33,13 @@ interface UserRepository {
      * @return [Completable] для информирования о завершении операции
      */
     fun setGender(userId: String, gender: Gender): Completable
+
+    /**
+     * Функция для получения пользователя.
+     * По возможности загружает по сети, либо берет из shared preferences.
+     *
+     * @return Данные пользователя.
+     */
+    fun fetchUser(): Single<User>
 
 }

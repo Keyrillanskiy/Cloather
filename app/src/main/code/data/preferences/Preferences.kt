@@ -24,7 +24,8 @@ class Preferences(private val context: Context) {
             gender = gender,
             preferredWeather = preferredWeather,
             token = token,
-            googleAvatarURL = googleAvatarUrl
+            googleAvatarURL = googleAvatarUrl,
+            googleEmail = googleEmail
         )
     }
 
@@ -35,11 +36,22 @@ class Preferences(private val context: Context) {
         preferredWeather = user.preferredWeather
         token = user.token
         googleAvatarUrl = user.googleAvatarURL
+        googleEmail = user.googleEmail
     }
 
     fun isUserAuthorized(): Boolean = uid != null
 
     fun isGenderUndefined(): Boolean = gender == Gender.UNDEFINED
+
+    fun deleteUserData() {
+        uid = null
+        name = null
+        gender = Gender.UNDEFINED
+        preferredWeather = PreferredWeather.NEUTRAL
+        token = null
+        googleAvatarUrl = null
+
+    }
 
     var isFirstLaunch: Boolean
         get() = prefs.getBoolean(PREF_IS_FIRST_LAUNCH, true)
@@ -103,6 +115,14 @@ class Preferences(private val context: Context) {
                 .apply()
         }
 
+    private var googleEmail: String?
+        get() = prefs.getString(PREF_GOOGLE_EMAIL, null)
+        set(value) {
+            prefs.edit()
+                .putString(PREF_GOOGLE_EMAIL, value)
+                .apply()
+        }
+
     private companion object {
         private const val PREFERENCES_NAME = "CloatherPrefs"
 
@@ -113,6 +133,7 @@ class Preferences(private val context: Context) {
         private const val PREF_PREFERRED_WEATHER = "prefWeather"
         private const val PREF_TOKEN = "token"
         private const val PREF_GOOGLE_AVATAR_URL = "googleAvatarURL"
+        private const val PREF_GOOGLE_EMAIL = "googleEmail"
     }
 
 }
