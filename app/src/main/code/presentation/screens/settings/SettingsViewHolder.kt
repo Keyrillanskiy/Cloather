@@ -2,6 +2,8 @@ package presentation.screens.settings
 
 import android.view.View
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CircleCrop
+import com.bumptech.glide.request.RequestOptions
 import domain.models.entities.User
 import domain.models.values.Gender
 import extensions.gone
@@ -77,6 +79,7 @@ class SettingsViewHolder(private val rootView: View) : BaseViewHolder(rootView) 
     private fun loadAvatar(avatarUrl: String?) {
         Glide.with(context)
             .load(avatarUrl)
+            .apply(RequestOptions.centerCropTransform())
             .into(rootView.settingsAvatarImageView)
     }
 
