@@ -40,6 +40,7 @@ import presentation.screens.auth.AuthActivity
 import presentation.screens.gender.GenderActivity
 import presentation.screens.intro.IntroActivity
 import presentation.screens.settings.SettingsActivity
+import presentation.screens.wardrobe.WardrobeActivity
 import presentation.share.ErrorDialog
 import timber.log.Timber
 import utils.NetUtils
@@ -147,7 +148,7 @@ class MainActivity : AppCompatActivity() {
             disableRefreshing()
 
             onRefresh = { currentState = currentState.getNextState(Event.FetchLocation) }
-            onWardrobeClick = { toast("Not implemented") }
+            onWardrobeClick = { WardrobeActivity.launch(this@MainActivity) }
             onSettingsClick = { SettingsActivity.launch(this@MainActivity) }
         }
 

@@ -61,7 +61,7 @@ class Preferences(private val context: Context) {
                 .apply()
         }
 
-    private var uid: String?
+    var uid: String?
         get() = prefs.getString(PREF_UID, null)
         set(value) {
             prefs.edit()

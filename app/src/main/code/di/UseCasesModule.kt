@@ -5,8 +5,10 @@ import data.mappers.implementations.UserMapperImpl
 import data.mappers.interfaces.LocationRequestDataMapper
 import data.useCases.implementations.LocationUseCaseImpl
 import data.useCases.implementations.UserUseCaseImpl
+import data.useCases.implementations.WardrobeUseCaseImpl
 import data.useCases.interfaces.LocationUseCase
 import data.useCases.interfaces.UserUseCase
+import data.useCases.interfaces.WardrobeUseCase
 import org.koin.dsl.module.module
 
 /**
@@ -18,4 +20,5 @@ import org.koin.dsl.module.module
 val useCasesModule = module {
     factory<UserUseCase> { UserUseCaseImpl(get(), UserMapperImpl()) }
     factory<LocationUseCase> { LocationUseCaseImpl(get(), LocationRequestDataMapperImpl()) }
+    factory<WardrobeUseCase> { WardrobeUseCaseImpl(get()) }
 }

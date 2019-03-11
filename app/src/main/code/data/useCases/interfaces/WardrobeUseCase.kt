@@ -1,21 +1,18 @@
-package data.repositories.interfaces
+package data.useCases.interfaces
 
 import domain.models.responses.Category
 import domain.models.responses.Thing
 import domain.models.values.Gender
 import io.reactivex.Completable
 import io.reactivex.Single
-import okhttp3.RequestBody
-import okhttp3.ResponseBody
-import retrofit2.http.*
 
 /**
- * Интерфейс репозитория для работы с одеждой.
+ * UseCase для работы с гардеробом пользователя.
  *
  * @author Keyrillanskiy
- * @since 10.02.2019, 17:15.
+ * @since 04.03.2019, 10:35.
  */
-interface WardrobeRepository {
+interface WardrobeUseCase {
 
     /**
      * Функция для получения набора одежды для текущей погоды.
@@ -45,13 +42,14 @@ interface WardrobeRepository {
     fun fetchUsersWardrobe(id: String?): Single<List<Thing>>
 
     /**
-     * Функция для получения списка вещей, соответствующих фильтру.
+     * Функция для получения списка вещей для данной категории.
      *
-     * @param filter Фильтр.
+     * @param categoryId Id категории.
+     * @param gender Пол пользователя.
      *
      * @return Список вещей.
      */
-    fun fetchThingsByCriteria(filter: Map<String, String>): Single<List<Thing>>
+    fun fetchThingsForWardrobeScreen(categoryId: String, gender: Gender): Single<List<Thing>>
 
     /**
      * Функция для добавления вещи в гардероб пользователя.
