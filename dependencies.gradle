@@ -40,10 +40,8 @@ ext {
     ]
 
     jsonDependencies = [
-            jasksonDataBind   : "com.fasterxml.jackson.core:jackson-databind:2.9.8",
-            jacksonAnnotations: "com.fasterxml.jackson.core:jackson-annotations:2.9.8",
-            jasksonKotlinAnnotations: "com.fasterxml.jackson.module:jackson-module-kotlin:2.9.8",
-            jasksonConverter  : "com.squareup.retrofit2:converter-jackson:$retrofitVersion"
+            gson: "com.google.code.gson:gson:2.8.5",
+            gsonConverter: "com.squareup.retrofit2:converter-gson:2.5.0"
     ]
 
     rxDependencies = [
@@ -55,9 +53,9 @@ ext {
     ]
 
     googleDependencies = [
-            firebase: "com.google.firebase:firebase-core:16.0.6",
-            auth    : "com.google.android.gms:play-services-auth:16.0.1",
-            location: "com.google.android.gms:play-services-location:16.0.0",
+            firebase   : "com.google.firebase:firebase-core:16.0.6",
+            auth       : "com.google.android.gms:play-services-auth:16.0.1",
+            location   : "com.google.android.gms:play-services-location:16.0.0",
             crashlytics: "com.crashlytics.sdk.android:crashlytics:2.9.9"
     ]
 

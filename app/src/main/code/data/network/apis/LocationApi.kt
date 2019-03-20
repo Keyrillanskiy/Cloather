@@ -1,8 +1,7 @@
 package data.network.apis
 
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.fasterxml.jackson.module.kotlin.readValue
 import com.github.keyrillanskiy.cloather.BuildConfig
+import com.google.gson.Gson
 import data.network.apiSpecs.LocationApiSpec
 import data.network.configLoggingInterceptor
 import domain.models.entities.LocationRequest
@@ -28,7 +27,7 @@ class LocationApi : LocationApiSpec {
 
     //TODO: refactor method
     override fun fetchGeolocation(locationRequestData: LocationRequest): Single<LocationResponse> {
-        val objectMapper = jacksonObjectMapper()
+        val objectMapper = Gson()
 
         val gmsCells = if (
             locationRequestData.countryCode == null
@@ -49,7 +48,7 @@ class LocationApi : LocationApiSpec {
 
         val mediaTypeJson = MediaType.parse("application/json")
         val requestBody = RequestBody.create(
-            mediaTypeJson, "json=" + objectMapper.writeValueAsString(locationRequestJson)
+            mediaTypeJson, "json=" + objectMapper.toJson(locationRequestJson)
         )
 
         val request = Request.Builder()
@@ -64,7 +63,7 @@ class LocationApi : LocationApiSpec {
             override fun onResponse(call: Call, response: Response) {
                 response.body()?.let { body ->
                     try {
-                        val objResponse = objectMapper.readValue<LocationResponse>(body.string())
+                        val objResponse = objectMapper.fromJson(body.string(), LocationResponse::class.java)
                         singleSubject.onSuccess(objResponse)
                     } catch (t: Throwable) {
                         singleSubject.onError(t)

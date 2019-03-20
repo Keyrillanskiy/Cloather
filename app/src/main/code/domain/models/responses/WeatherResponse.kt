@@ -1,6 +1,6 @@
 package domain.models.responses
 
-import com.fasterxml.jackson.annotation.JsonProperty
+import com.google.gson.annotations.SerializedName
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -13,11 +13,11 @@ import java.util.*
 
 data class WeatherResponse(
     val city: String,
-    @JsonProperty("current") val currentWeather: CurrentWeather,
+    @SerializedName("current") val currentWeather: CurrentWeather,
     val forecast: List<Forecast>
 )
 
-data class CurrentWeather(@JsonProperty("temp") val temperature: Int, val type: String)
+data class CurrentWeather(@SerializedName("temp") val temperature: Int, val type: String)
 
 fun CurrentWeather.temperature(): String {
     var strTemperature = temperature.toString()
@@ -32,7 +32,7 @@ fun CurrentWeather.temperature(): String {
 data class Forecast(
     val time: Long,
     val type: String,
-    @JsonProperty("temp") val temperature: Int
+    @SerializedName("temp") val temperature: Int
 )
 
 fun Forecast.time(): String {

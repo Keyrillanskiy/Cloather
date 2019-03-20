@@ -1,6 +1,6 @@
 package domain.models.responses
 
-import com.fasterxml.jackson.annotation.JsonProperty
+import com.google.gson.annotations.SerializedName
 
 /**
  * Модели для взаимодействия с сервером
@@ -12,7 +12,7 @@ import com.fasterxml.jackson.annotation.JsonProperty
 /**
  * Класс для оборачивания токена перед отправкой на сервер
  */
-data class TokenWrapper(@JsonProperty(value = "googleToken") val token: String)
+data class TokenWrapper(@SerializedName(value = "googleToken") val token: String)
 
 data class UserResponse(
     val id: String,

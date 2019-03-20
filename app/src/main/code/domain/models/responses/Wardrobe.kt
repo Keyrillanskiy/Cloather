@@ -1,7 +1,6 @@
 package domain.models.responses
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties
-import com.fasterxml.jackson.annotation.JsonProperty
+import com.google.gson.annotations.SerializedName
 import domain.models.values.Gender
 import presentation.screens.wardrobe.CategoryItem
 import presentation.screens.wardrobe.ThingItem
@@ -14,26 +13,24 @@ import java.lang.IllegalArgumentException
  * @since 15.01.2019, 20:25.
  */
 
-@JsonIgnoreProperties(ignoreUnknown = true)
 data class Category(
     val id: String,
     val name: String,
     val priority: Int,
-    @JsonProperty("imageLink") val imageUrl: String?
+    @SerializedName("imageLink") val imageUrl: String?
 )
 
 fun Category.toCategoryItem(): CategoryItem {
     return CategoryItem(id, name, imageUrl)
 }
 
-@JsonIgnoreProperties(ignoreUnknown = true)
 data class Thing(
     val id: String,
     val name: String,
     val priority: Int,
     val onPersonImage: String?,
-    @JsonProperty("onModel") val modelImages: ModelImages?,
-    @JsonProperty("onPreview") val previewImages: PreviewImages?
+    @SerializedName("onModel") val modelImages: ModelImages?,
+    @SerializedName("onPreview") val previewImages: PreviewImages?
 )
 
 fun Thing.toThingItem(isInWardrobe: Boolean, gender: Gender): ThingItem {
@@ -45,11 +42,11 @@ fun Thing.toThingItem(isInWardrobe: Boolean, gender: Gender): ThingItem {
 }
 
 data class ModelImages(
-    @JsonProperty("man") val manImageUrl: String?,
-    @JsonProperty("woman") val womanImageUrl: String?
+    @SerializedName("man") val manImageUrl: String?,
+    @SerializedName("woman") val womanImageUrl: String?
 )
 
 data class PreviewImages(
-    @JsonProperty("man") val manImageUrl: String?,
-    @JsonProperty("woman") val womanImageUrl: String?
+    @SerializedName("man") val manImageUrl: String?,
+    @SerializedName("woman") val womanImageUrl: String?
 )
