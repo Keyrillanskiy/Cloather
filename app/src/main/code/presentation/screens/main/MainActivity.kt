@@ -5,6 +5,8 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.github.keyrillanskiy.cloather.R
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import extensions.gone
 import extensions.visible
 import kotlinx.android.synthetic.main.activity_main.*
@@ -18,6 +20,7 @@ import presentation.screens.weather.RequestLocationDialog
 import presentation.screens.weather.WeatherInteractor
 import presentation.share.ErrorDialog
 import utils.NetUtils
+import utils.googleAuthClientId
 
 /**
  * Активити, которая содержит viewPager с экранами погоды, гардероба и настроек.
@@ -74,6 +77,10 @@ class MainActivity : AppCompatActivity(), WeatherInteractor, WardrobeInteractor,
     }
 
     override fun onLogOut() {
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .build()
+        GoogleSignIn.getClient(this, gso).signOut()
+
         viewModel.deleteUserData()
         AuthActivity.launch(this)
         finish()
