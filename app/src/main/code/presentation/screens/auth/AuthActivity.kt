@@ -20,7 +20,6 @@ import presentation.common.Loading
 import presentation.common.Success
 import presentation.screens.gender.GenderActivity
 import presentation.screens.main.MainActivity
-import presentation.screens.weather.WeatherActivity
 import presentation.share.ErrorDialog
 import presentation.share.ProgressDialog
 import timber.log.Timber
@@ -100,7 +99,7 @@ class AuthActivity : AppCompatActivity() {
         setContentView(com.github.keyrillanskiy.cloather.R.layout.activity_auth)
 
         fragmentsToShow = (savedInstanceState?.getSerializable(KEY_FRAGMENTS_TO_SHOW) as? LinkedList<FragmentToShow>)
-            ?: LinkedList()
+                ?: LinkedList()
 
         authButton.clicks()
             .throttleFirst(800, TimeUnit.MILLISECONDS)
@@ -118,15 +117,10 @@ class AuthActivity : AppCompatActivity() {
 
         val signInClient = GoogleSignIn.getClient(this, gso)
 
-        val account = GoogleSignIn.getLastSignedInAccount(this)
-        if (account != null) {
-            sendGoogleToken(account.idToken)
-        } else {
-            NetUtils.withNetConnection(
-                onSuccess = { startActivityForResult(signInClient.signInIntent, RC_SIGN_IN) },
-                onError = { showInternetAuthError() }
-            )
-        }
+        NetUtils.withNetConnection(
+            onSuccess = { startActivityForResult(signInClient.signInIntent, RC_SIGN_IN) },
+            onError = { showInternetAuthError() }
+        )
 
     }
 
