@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.pm.PackageManager
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 
 /**
  * @author Keyrillanskiy
@@ -30,8 +31,12 @@ object PermissionUtils {
         return isPermissionsGranted(context, locationPermissions)
     }
 
-    fun requestLocationPermission(activity: Activity, requestCode: Int) {
+    fun requestLocationPermissionInActivity(activity: Activity, requestCode: Int) {
         ActivityCompat.requestPermissions(activity, locationPermissions, requestCode)
+    }
+
+    fun requestLocationPermissionsInFragment(fragment: Fragment, requestCode: Int) {
+        fragment.requestPermissions(locationPermissions, requestCode)
     }
 
 }

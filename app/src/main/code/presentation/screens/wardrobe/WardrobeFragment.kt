@@ -12,9 +12,11 @@ import domain.models.responses.toCategoryItem
 import domain.models.responses.toThingItem
 import extensions.reObserve
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import presentation.common.ActivityInteractor
 import presentation.common.Failure
 import presentation.common.Loading
 import presentation.common.Success
+import presentation.screens.main.MainViewModel
 import utils.NetUtils
 
 /**
@@ -25,7 +27,7 @@ import utils.NetUtils
  */
 class WardrobeFragment : Fragment() {
 
-    private val viewModel by sharedViewModel<WardrobeViewModel>()
+    private val viewModel by sharedViewModel<MainViewModel>()
     private lateinit var viewHolder: WardrobeViewHolder
     private var parentInteractor: WardrobeInteractor? = null
 
@@ -67,7 +69,7 @@ class WardrobeFragment : Fragment() {
         super.onDetach()
     }
 
-    private fun WardrobeViewModel.observe() {
+    private fun MainViewModel.observe() {
         categoriesLiveData.reObserve(this@WardrobeFragment, Observer { response ->
             when (response) {
                 is Loading -> parentInteractor?.onShowLoading()
@@ -106,8 +108,6 @@ class WardrobeFragment : Fragment() {
 
 }
 
-interface WardrobeInteractor {
-    fun onShowLoading()
-    fun onHideLoading()
-    fun onInternetError()
+interface WardrobeInteractor: ActivityInteractor {
+
 }

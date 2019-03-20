@@ -11,6 +11,7 @@
     <string name="feature_in_development">Функция в разработке</string>
     <string name="user_data_corrupted_error">Данные пользователя повреждены. Пожалуйста, авторизируйтесь снова.</string>
     <string name="wardrobe">Гардероб</string>
+    <string name="weather">Погода</string>
 
     <!-- Auth screen -->
     <string name="authorization">Авторизация</string>

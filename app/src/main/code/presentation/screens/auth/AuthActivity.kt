@@ -1,12 +1,10 @@
 package presentation.screens.auth
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
-import com.google.android.gms.auth.UserRecoverableAuthException
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -22,6 +20,7 @@ import presentation.common.Loading
 import presentation.common.Success
 import presentation.screens.gender.GenderActivity
 import presentation.screens.main.MainActivity
+import presentation.screens.weather.WeatherActivity
 import presentation.share.ErrorDialog
 import presentation.share.ProgressDialog
 import timber.log.Timber
@@ -101,7 +100,7 @@ class AuthActivity : AppCompatActivity() {
         setContentView(com.github.keyrillanskiy.cloather.R.layout.activity_auth)
 
         fragmentsToShow = (savedInstanceState?.getSerializable(KEY_FRAGMENTS_TO_SHOW) as? LinkedList<FragmentToShow>)
-                ?: LinkedList()
+            ?: LinkedList()
 
         authButton.clicks()
             .throttleFirst(800, TimeUnit.MILLISECONDS)

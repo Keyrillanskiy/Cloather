@@ -3,14 +3,20 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/action_wardrobe"
-        android:icon="@drawable/ic_wardrobe"
+        android:id="@+id/weather"
+        android:icon="@drawable/ic_arrow_back"
+        android:title="@string/weather"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/wardrobe"
+        android:icon="@drawable/ic_arrow_back"
         android:title="@string/wardrobe"
         app:showAsAction="ifRoom" />
 
     <item
-        android:id="@+id/action_settings"
-        android:icon="@drawable/ic_settings"
+        android:id="@+id/settings"
+        android:icon="@drawable/ic_arrow_back"
         android:title="@string/settings"
         app:showAsAction="ifRoom" />
 

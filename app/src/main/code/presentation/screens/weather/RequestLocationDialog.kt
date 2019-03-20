@@ -1,4 +1,4 @@
-package presentation.screens.main
+package presentation.screens.weather
 
 import android.app.Dialog
 import android.os.Bundle

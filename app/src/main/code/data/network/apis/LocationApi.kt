@@ -1,6 +1,5 @@
 package data.network.apis
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.github.keyrillanskiy.cloather.BuildConfig
@@ -27,58 +26,57 @@ class LocationApi : LocationApiSpec {
             .build()
     }
 
+    //TODO: refactor method
+    override fun fetchGeolocation(locationRequestData: LocationRequest): Single<LocationResponse> {
+        val objectMapper = jacksonObjectMapper()
 
-//TODO: refactor method
-override fun fetchGeolocation(locationRequestData: LocationRequest): Single<LocationResponse> {
-    val objectMapper = jacksonObjectMapper()
-
-    val gmsCells = if (
-        locationRequestData.countryCode == null
-        || locationRequestData.operatorId == null
-        || locationRequestData.cellId == null
-        || locationRequestData.lac == null
-    )
-        null
-    else listOf(
-        LocationRequestJson.GsmCell(
-            locationRequestData.countryCode,
-            locationRequestData.operatorId,
-            locationRequestData.cellId,
-            locationRequestData.lac
+        val gmsCells = if (
+            locationRequestData.countryCode == null
+            || locationRequestData.operatorId == null
+            || locationRequestData.cellId == null
+            || locationRequestData.lac == null
         )
-    )
-    val locationRequestJson = LocationRequestJson(LocationRequestJson.Common(), gmsCells)
+            null
+        else listOf(
+            LocationRequestJson.GsmCell(
+                locationRequestData.countryCode,
+                locationRequestData.operatorId,
+                locationRequestData.cellId,
+                locationRequestData.lac
+            )
+        )
+        val locationRequestJson = LocationRequestJson(LocationRequestJson.Common(), gmsCells)
 
-    val mediaTypeJson = MediaType.parse("application/json")
-    val requestBody = RequestBody.create(
-        mediaTypeJson, "json=" + objectMapper.writeValueAsString(locationRequestJson)
-    )
+        val mediaTypeJson = MediaType.parse("application/json")
+        val requestBody = RequestBody.create(
+            mediaTypeJson, "json=" + objectMapper.writeValueAsString(locationRequestJson)
+        )
 
-    val request = Request.Builder()
-        .url(locatorApiUrl)
-        .header("Content-Type", "application/json")
-        .post(requestBody)
-        .build()
+        val request = Request.Builder()
+            .url(locatorApiUrl)
+            .header("Content-Type", "application/json")
+            .post(requestBody)
+            .build()
 
-    val singleSubject = SingleSubject.create<LocationResponse>()
+        val singleSubject = SingleSubject.create<LocationResponse>()
 
-    httpClient.newCall(request).enqueue(object : Callback {
-        override fun onResponse(call: Call, response: Response) {
-            response.body()?.let { body ->
-                try {
-                    val objResponse = objectMapper.readValue<LocationResponse>(body.string())
-                    singleSubject.onSuccess(objResponse)
-                } catch (t: Throwable) {
-                    singleSubject.onError(t)
+        httpClient.newCall(request).enqueue(object : Callback {
+            override fun onResponse(call: Call, response: Response) {
+                response.body()?.let { body ->
+                    try {
+                        val objResponse = objectMapper.readValue<LocationResponse>(body.string())
+                        singleSubject.onSuccess(objResponse)
+                    } catch (t: Throwable) {
+                        singleSubject.onError(t)
+                    }
                 }
+
             }
 
-        }
+            override fun onFailure(call: Call, e: IOException) = singleSubject.onError(e)
+        })
 
-        override fun onFailure(call: Call, e: IOException) = singleSubject.onError(e)
-    })
-
-    return singleSubject
-}
+        return singleSubject
+    }
 
 }

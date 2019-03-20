@@ -11,5 +11,5 @@ import presentation.screens.main.MainViewModel
  * @since 19.01.2019, 15:44.
  */
 val mainModule = module {
-    viewModel { MainViewModel(get(), get(), get(), get(), get()) }
+    viewModel { MainViewModel(get(), get(), get(), get(), get(), get()) }
 }

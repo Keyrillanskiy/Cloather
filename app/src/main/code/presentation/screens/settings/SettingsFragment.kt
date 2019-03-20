@@ -2,6 +2,7 @@ package presentation.screens.settings
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,9 +12,11 @@ import com.github.keyrillanskiy.cloather.R
 import extensions.reObserve
 import extensions.toast
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import presentation.common.ActivityInteractor
 import presentation.common.Failure
 import presentation.common.Loading
 import presentation.common.Success
+import presentation.screens.main.MainViewModel
 
 /**
  * Экран настроек.
@@ -23,7 +26,7 @@ import presentation.common.Success
  */
 class SettingsFragment : Fragment() {
 
-    private val viewModel by sharedViewModel<SettingsViewModel>()
+    private val viewModel by sharedViewModel<MainViewModel>()
     private lateinit var viewHolder: SettingsViewHolder
     private var parentInteractor: SettingsInteractor? = null
 
@@ -76,8 +79,6 @@ class SettingsFragment : Fragment() {
 
 }
 
-interface SettingsInteractor {
+interface SettingsInteractor : ActivityInteractor {
     fun onLogOut()
-    fun onShowLoading()
-    fun onHideLoading()
 }

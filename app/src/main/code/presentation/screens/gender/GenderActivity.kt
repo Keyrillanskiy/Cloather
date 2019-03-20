@@ -17,7 +17,7 @@ import presentation.common.Failure
 import presentation.common.Loading
 import presentation.common.Success
 import presentation.screens.auth.AuthActivity
-import presentation.screens.main.MainActivity
+import presentation.screens.weather.WeatherActivity
 import presentation.share.ErrorDialog
 import presentation.share.ProgressDialog
 import utils.NetUtils
@@ -114,7 +114,7 @@ class GenderActivity : AppCompatActivity() {
     }
 
     private fun openMainScreen() {
-        MainActivity.launch(this)
+        WeatherActivity.launch(this)
         finish()
     }
 

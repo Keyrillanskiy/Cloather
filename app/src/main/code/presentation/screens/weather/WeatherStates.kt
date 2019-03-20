@@ -1,4 +1,4 @@
-package presentation.screens.main
+package presentation.screens.weather
 
 import presentation.common.FiniteState
 
@@ -79,7 +79,10 @@ class ReadyToFetchDataState : FiniteState<Event> {
 class LoadingGeolocationState : FiniteState<Event> {
     override fun getNextState(event: Event): FiniteState<Event> {
         return when (event) {
-            is Event.FetchData -> UpdatingDataState(event.latitude, event.longitude)
+            is Event.FetchData -> UpdatingDataState(
+                event.latitude,
+                event.longitude
+            )
             is Event.FetchLocation -> LoadingGeolocationState()
             is Event.LocationDisabled -> WithLocationPermissionState()
             is Event.LocationPermissionRemoved -> WithoutLocationPermissionState()

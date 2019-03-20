@@ -63,12 +63,10 @@ class SettingsViewHolder(private val rootView: View) : BaseViewHolder(rootView) 
                 Gender.MALE -> {
                     rootView.run {
                         settingsMaleRadioButton.isChecked = true
-                        settingsFemaleRadioButton.isChecked = false
                     }
                 }
                 Gender.FEMALE -> {
                     rootView.run {
-                        settingsMaleRadioButton.isChecked = false
                         settingsFemaleRadioButton.isChecked = true
                     }
                 }
@@ -85,13 +83,11 @@ class SettingsViewHolder(private val rootView: View) : BaseViewHolder(rootView) 
 
     private fun onMaleClick() {
         val newGender = Gender.MALE
-        gender = newGender
         onGenderChanged?.invoke(newGender)
     }
 
     private fun onFemaleClick() {
         val newGender = Gender.FEMALE
-        gender = newGender
         onGenderChanged?.invoke(newGender)
     }
 

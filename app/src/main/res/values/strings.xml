@@ -12,6 +12,7 @@
     <string name="feature_in_development">Feature in development</string>
     <string name="user_data_corrupted_error">Your user data is corrupted. Authorize again, please.</string>
     <string name="wardrobe">Wardrobe</string>
+    <string name="weather">Weather</string>
 
     <!-- Auth screen -->
     <string name="authorization">Authorization</string>
