@@ -57,10 +57,6 @@ class MainActivity : AppCompatActivity(), WeatherInteractor, WardrobeInteractor,
         }
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-    }
-
     override fun onShowLoading() {
         progressIndicator.visible()
     }
@@ -110,7 +106,7 @@ class MainActivity : AppCompatActivity(), WeatherInteractor, WardrobeInteractor,
                 .also { dialog ->
                     onOkClick?.let { dialog.onOkClick = { it.invoke() } }
                     onRetryClick?.let { dialog.onRetryClick = { it.invoke() } }
-                    dialog.showNow(supportFragmentManager, ErrorDialog.TAG)
+                    dialog.show(supportFragmentManager, ErrorDialog.TAG)
                 }
     }
 
