@@ -44,16 +44,6 @@
                 app:layout_constraintVertical_bias="1"
                 tools:ignore="ContentDescription" />
 
-            <Button
-                android:id="@+id/crashButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Crash!"
-                android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                tools:visibility="visible" />
-
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

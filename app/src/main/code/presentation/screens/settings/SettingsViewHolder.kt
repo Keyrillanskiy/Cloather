@@ -2,13 +2,9 @@ package presentation.screens.settings
 
 import android.view.View
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import com.bumptech.glide.request.RequestOptions
 import domain.models.entities.User
 import domain.models.values.Gender
-import extensions.gone
-import extensions.visible
-import kotlinx.android.synthetic.main.activity_settings.view.*
 import kotlinx.android.synthetic.main.fragment_settings.view.*
 import presentation.common.BaseViewHolder
 

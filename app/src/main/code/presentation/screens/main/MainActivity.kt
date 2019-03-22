@@ -113,7 +113,10 @@ class MainActivity : AppCompatActivity(), WeatherInteractor, WardrobeInteractor,
     private fun initMainScreen() {
         setContentView(R.layout.activity_main)
         viewHolder = MainViewHolder(root, supportFragmentManager).setup {
-            onSettingsLeaved = { uploadSettings() }
+            onSettingsLeaved = {
+                uploadSettings()
+                viewModel.fetchCategories()
+            }
         }
     }
 

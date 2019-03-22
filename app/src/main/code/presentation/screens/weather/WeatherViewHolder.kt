@@ -24,11 +24,6 @@ class WeatherViewHolder(private val rootView: View) : BaseViewHolder(rootView) {
 
         rootView.run {
             mainRefreshLayout.setOnRefreshListener { onRefresh?.invoke() }
-
-            if (BuildConfig.BUILD_TYPE == "debugCrashes") {
-                crashButton.visible()
-                crashButton.setOnClickListener { Crashlytics.getInstance().crash() }
-            }
         }
 
         return this

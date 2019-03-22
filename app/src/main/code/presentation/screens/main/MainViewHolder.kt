@@ -9,6 +9,7 @@ import presentation.common.BaseViewHolder
 import presentation.screens.main.MainPagerAdapter.Companion.SETTINGS_FRAGMENT_POSITION
 import presentation.screens.main.MainPagerAdapter.Companion.WARDROBE_FRAGMENT_POSITION
 import presentation.screens.main.MainPagerAdapter.Companion.WEATHER_FRAGMENT_POSITION
+import presentation.screens.wardrobe.WardrobeFragment
 
 /**
  * @author Keyrillanskiy
@@ -25,14 +26,16 @@ class MainViewHolder(
         init.invoke(this)
 
         with(rootView) {
+            val adapter = MainPagerAdapter(fragmentManager)
+
             mainViewPager.offscreenPageLimit = 3
-            mainViewPager.adapter = MainPagerAdapter(fragmentManager)
+            mainViewPager.adapter = adapter
             mainViewPager.addOnPageChangeListener(object : ViewPager.SimpleOnPageChangeListener() {
 
                 var previousPosition = -1
 
                 override fun onPageSelected(position: Int) {
-                    if(previousPosition == SETTINGS_FRAGMENT_POSITION) {
+                    if (previousPosition == SETTINGS_FRAGMENT_POSITION) {
                         onSettingsLeaved?.invoke()
                     }
                     previousPosition = position
