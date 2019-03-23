@@ -4,10 +4,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.TransitionOptions
-import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade
-import com.bumptech.glide.request.RequestOptions
 import com.github.keyrillanskiy.cloather.R
 import extensions.loadImageFromBackend
 import kotlinx.android.synthetic.main.item_wardrobe_category.view.*
@@ -111,7 +107,11 @@ class ThingItemViewHolder(private val rootView: View) : WardrobeItemViewHolder(r
     fun bindData(data: ThingItem) {
         with(rootView) {
             wardrobeThingNameTextView.text = data.name
-            thingCheckIndicator.visibility = if (data.isChecked) View.VISIBLE else View.GONE
+            if(data.isChecked) {
+                thingCheckIndicator.setImageResource(R.drawable.ic_checked_circle)
+            } else {
+                thingCheckIndicator.setImageResource(R.drawable.ic_unckecked_circle)
+            }
             setOnClickListener {
                 val newData = data.copy(isChecked = !data.isChecked)
                 onThingSelected?.invoke(newData)
