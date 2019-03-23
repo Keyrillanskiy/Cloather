@@ -17,6 +17,7 @@
     <!-- Auth screen -->
     <string name="authorization">Authorization</string>
     <string name="authorization_error_title">Authorization error</string>
+    <string name="authorization_via_google">Sign in via Google</string>
 
     <!-- Gender screen -->
     <string name="saving_your_gender">Saving your gender</string>

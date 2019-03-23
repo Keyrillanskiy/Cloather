@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="1dp"
-    android:background="@drawable/bg_wardrobe_item"
+    android:background="@drawable/bg_rounded_corners_4dp"
     android:orientation="vertical">
 
     <androidx.constraintlayout.widget.ConstraintLayout
