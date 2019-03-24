@@ -19,8 +19,10 @@
     <string name="authorization_via_google">Войти через Google</string>
 
     <!-- Gender screen -->
+    <string name="choose_your_gender">Выберите ваш пол:</string>
     <string name="saving_your_gender">Запоминаем ваш пол</string>
     <string name="saving_your_gender_error_title">Ошибка сохранения пола</string>
+    <string name="get_started">Начать</string>
 
     <!-- Main screen -->
     <string name="settings">Настройки</string>
@@ -32,8 +34,8 @@
     <!-- Settings screen -->
     <string name="logout">Выйти из аккаунта</string>
     <string name="your_gender">Ваш пол:</string>
-    <string name="male_gender">Мужской</string>
-    <string name="female_gender">Женский</string>
+    <string name="male_gender">мужской</string>
+    <string name="female_gender">женский</string>
     <string name="notifications">Уведомления</string>
     <string name="notifications_description">Сообщения о резком изменении погоды и рекомендации к выбору одежды.</string>
     <string name="rate_app">Оценить приложение</string>

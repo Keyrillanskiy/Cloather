@@ -8,6 +8,9 @@ import androidx.lifecycle.Observer
 import com.github.keyrillanskiy.cloather.R
 import com.jakewharton.rxbinding3.view.clicks
 import domain.models.values.Gender
+import extensions.enable
+import extensions.gone
+import extensions.visible
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.subjects.PublishSubject
@@ -52,12 +55,25 @@ class GenderActivity : AppCompatActivity() {
     private fun initGenderScreen() {
         setContentView(R.layout.activity_gender)
 
+        var selectedGender = Gender.MALE
+
         val clicksSubject = PublishSubject.create<GenderClick>()
-        clicksSubject.throttleFirst(500, TimeUnit.MILLISECONDS)
+        clicksSubject.throttleFirst(400, TimeUnit.MILLISECONDS)
             .subscribe { click ->
                 when (click) {
-                    GenderClick.MAN_CLICK -> sendGender(Gender.MALE)
-                    GenderClick.WOMAN_CLICK -> sendGender(Gender.FEMALE)
+                    GenderClick.MAN_CLICK -> {
+                        selectedGender = Gender.MALE
+                        genderManSelectIndicatorImageView.visible()
+                        genderWomanSelectIndicatorImageView.gone()
+                        genderGetStartedButton.enable()
+                    }
+                    GenderClick.WOMAN_CLICK -> {
+                        selectedGender = Gender.FEMALE
+                        genderManSelectIndicatorImageView.gone()
+                        genderWomanSelectIndicatorImageView.visible()
+                        genderGetStartedButton.enable()
+                    }
+                    GenderClick.GET_STARTED_CLICK -> sendGender(selectedGender)
                 }
             }
             .addTo(disposables)
@@ -68,6 +84,10 @@ class GenderActivity : AppCompatActivity() {
 
         genderWomanButton.clicks()
             .subscribe { clicksSubject.onNext(GenderClick.WOMAN_CLICK) }
+            .addTo(disposables)
+
+        genderGetStartedButton.clicks()
+            .subscribe { clicksSubject.onNext(GenderClick.GET_STARTED_CLICK) }
             .addTo(disposables)
 
         viewModel.observeData()
@@ -136,7 +156,7 @@ class GenderActivity : AppCompatActivity() {
     }
 
     enum class GenderClick {
-        MAN_CLICK, WOMAN_CLICK
+        MAN_CLICK, WOMAN_CLICK, GET_STARTED_CLICK
     }
 
     companion object {

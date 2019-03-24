@@ -20,8 +20,10 @@
     <string name="authorization_via_google">Sign in via Google</string>
 
     <!-- Gender screen -->
+    <string name="choose_your_gender">Choose your gender:</string>
     <string name="saving_your_gender">Saving your gender</string>
     <string name="saving_your_gender_error_title">Save gender error</string>
+    <string name="get_started">Get started</string>
 
     <!-- Main screen -->
     <string name="settings">Settings</string>
@@ -33,8 +35,8 @@
     <!-- Settings screen -->
     <string name="logout">Log out</string>
     <string name="your_gender">Your gender:</string>
-    <string name="male_gender">Male</string>
-    <string name="female_gender">Female</string>
+    <string name="male_gender">male</string>
+    <string name="female_gender">female</string>
     <string name="notifications">Notifications</string>
     <string name="notifications_description">Messages about important weather changes and outfit recommendations</string>
     <string name="rate_app">Rate app</string>

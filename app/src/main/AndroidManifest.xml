@@ -35,6 +35,7 @@
         <activity
             android:name="presentation.screens.gender.GenderActivity"
             android:screenOrientation="portrait"
+            android:exported="true"
             android:windowSoftInputMode="stateAlwaysHidden" />
 
         <activity
