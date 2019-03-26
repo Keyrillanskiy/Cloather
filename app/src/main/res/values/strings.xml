@@ -33,6 +33,10 @@
     <string name="permit">Permit</string>
     <string name="location_error">Loading location error</string>
     <string name="fetching_data_interner_error_title">Fetching data error</string>
+    <string name="tutorial_circle_one">Get weather forecast and appropriate set of clothes</string>
+    <string name="tutorial_circle_two">Configure your wardrobe for optimal clothing</string>
+    <string name="tutorial_circle_three">Set up your profile</string>
+    <string name="got_it">Got it</string>
 
     <!-- Settings screen -->
     <string name="logout">Log out</string>

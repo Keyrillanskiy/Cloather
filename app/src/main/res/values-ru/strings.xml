@@ -32,6 +32,10 @@
     <string name="permit">Разрешить</string>
     <string name="location_error">Ошибка загрузки местоположения</string>
     <string name="fetching_data_interner_error_title">Ошибка загрузки данных</string>
+    <string name="tutorial_circle_one">Получайте прогноз погоды и подходящий набор одежды</string>
+    <string name="tutorial_circle_two">Сформируйте свой гардероб для оптимального подбора одежды</string>
+    <string name="tutorial_circle_three">Настраивайте свой профиль</string>
+    <string name="got_it">Понятно</string>
 
     <!-- Settings screen -->
     <string name="logout">Выйти из аккаунта</string>

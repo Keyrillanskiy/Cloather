@@ -185,6 +185,7 @@ class WeatherFragment : Fragment() {
         viewHolder.enableRefreshing()
         if (isFirstLaunch) {
             isFirstLaunch = false
+            parentInteractor?.onShowCase()
             currentState = currentState.getNextState(Event.FetchLocation)
         }
     }
@@ -418,5 +419,7 @@ interface WeatherInteractor : ActivityInteractor {
         title: String? = null, message: String? = null,
         onOkClick: (() -> Unit)? = null, onRetryClick: (() -> Unit)? = null
     )
+
+    fun onShowCase()
 
 }

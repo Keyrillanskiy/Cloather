@@ -13,14 +13,15 @@ import kotlinx.android.synthetic.main.activity_main.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import presentation.screens.auth.AuthActivity
 import presentation.screens.gender.GenderActivity
-import presentation.screens.intro.IntroActivity
 import presentation.screens.settings.SettingsInteractor
 import presentation.screens.wardrobe.WardrobeInteractor
 import presentation.screens.weather.RequestLocationDialog
 import presentation.screens.weather.WeatherInteractor
 import presentation.share.ErrorDialog
+import uk.co.deanwild.materialshowcaseview.MaterialShowcaseSequence
+import uk.co.deanwild.materialshowcaseview.ShowcaseConfig
 import utils.NetUtils
-import utils.googleAuthClientId
+
 
 /**
  * Активити, которая содержит viewPager с экранами погоды, гардероба и настроек.
@@ -34,15 +35,11 @@ class MainActivity : AppCompatActivity(), WeatherInteractor, WardrobeInteractor,
     private lateinit var viewHolder: MainViewHolder
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        setTheme(R.style.AppTheme_NoActionBar) // потому что по умолчанию стоит тема для splash
+        setTheme(com.github.keyrillanskiy.cloather.R.style.AppTheme_NoActionBar) // потому что по умолчанию стоит тема для splash
         super.onCreate(savedInstanceState)
 
         // routing
         when {
-            viewModel.isFirstLaunch() -> {
-                IntroActivity.launch(this)
-                finish()
-            }
             !viewModel.isUserAuthorized() -> {
                 AuthActivity.launch(this)
                 finish()
@@ -51,9 +48,7 @@ class MainActivity : AppCompatActivity(), WeatherInteractor, WardrobeInteractor,
                 GenderActivity.launch(this)
                 finish()
             }
-            else -> {
-                initMainScreen()
-            }
+            else -> initMainScreen()
         }
     }
 
@@ -66,8 +61,8 @@ class MainActivity : AppCompatActivity(), WeatherInteractor, WardrobeInteractor,
     }
 
     override fun onInternetError() {
-        val title = getString(R.string.internet_error_title)
-        val message = getString(R.string.internet_connection_error_message)
+        val title = getString(com.github.keyrillanskiy.cloather.R.string.internet_error_title)
+        val message = getString(com.github.keyrillanskiy.cloather.R.string.internet_connection_error_message)
 
         onShowErrorDialog(title, message)
     }
@@ -110,8 +105,31 @@ class MainActivity : AppCompatActivity(), WeatherInteractor, WardrobeInteractor,
                 }
     }
 
+    override fun onShowCase() {
+        if (!viewModel.preferences.isFirstLaunch) {
+            return
+        }
+
+        val config = ShowcaseConfig().apply {
+            delay = 500
+        }
+        val circleItemOneString = getString(R.string.tutorial_circle_one)
+        val circleItemTwoString = getString(R.string.tutorial_circle_two)
+        val circleItemThreeString = getString(R.string.tutorial_circle_three)
+        val gotItString = getString(R.string.got_it)
+        val sequence = MaterialShowcaseSequence(this, SHOWCASE_ID).apply {
+            setConfig(config)
+            addSequenceItem(mainBottomNavItem1, circleItemOneString, gotItString)
+            addSequenceItem(mainBottomNavItem2, circleItemTwoString, gotItString)
+            addSequenceItem(mainBottomNavItem3, circleItemThreeString, gotItString)
+        }
+        sequence.start()
+
+        viewModel.preferences.isFirstLaunch = false
+    }
+
     private fun initMainScreen() {
-        setContentView(R.layout.activity_main)
+        setContentView(com.github.keyrillanskiy.cloather.R.layout.activity_main)
         viewHolder = MainViewHolder(root, supportFragmentManager).setup {
             onSettingsLeaved = {
                 uploadSettings()
@@ -130,13 +148,15 @@ class MainActivity : AppCompatActivity(), WeatherInteractor, WardrobeInteractor,
     }
 
     private fun showUploadSettingsInternetError() {
-        val title = getString(R.string.upload_settings_error)
-        val message = getString(R.string.internet_connection_error_message)
+        val title = getString(com.github.keyrillanskiy.cloather.R.string.upload_settings_error)
+        val message = getString(com.github.keyrillanskiy.cloather.R.string.internet_connection_error_message)
 
         onShowErrorDialog(title, message, onRetryClick = { viewModel.uploadSettings() })
     }
 
     companion object {
+        private const val SHOWCASE_ID = "com.github.keyrillanskiy.main.showcase"
+
         fun launch(context: Context) {
             context.startActivity(Intent(context, MainActivity::class.java))
         }

@@ -35,7 +35,7 @@ import utils.SchedulersFacade
  * @since 13.03.2019, 9:14.
  */
 class MainViewModel(
-    private val preferences: Preferences,
+    val preferences: Preferences,
     private val locationUseCase: LocationUseCase,
     private val weatherRepository: WeatherRepository,
     private val wardrobeUseCase: WardrobeUseCase,
@@ -76,8 +76,6 @@ class MainViewModel(
 
     val gender: Gender
         get() = preferences.gender
-
-    fun isFirstLaunch() = preferences.isFirstLaunch
 
     fun isUserAuthorized() = preferences.isUserAuthorized()
 
