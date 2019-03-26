@@ -26,7 +26,7 @@ fun CurrentWeather.temperature(): String {
         strTemperature = "+$strTemperature"
     }
 
-    return "$strTemperature ˚C"
+    return "$strTemperature˚"
 }
 
 data class Forecast(
@@ -46,5 +46,5 @@ fun Forecast.temperature(): String {
         strTemperature = "+$strTemperature"
     }
 
-    return "$strTemperature ˚C"
+    return "$strTemperature˚"
 }

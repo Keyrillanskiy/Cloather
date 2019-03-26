@@ -3,8 +3,8 @@ package presentation.screens.main
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import data.mappers.interfaces.WeatherMapper
 import data.preferences.Preferences
-import data.repositories.interfaces.WardrobeRepository
 import data.repositories.interfaces.WeatherRepository
 import data.useCases.interfaces.LocationUseCase
 import data.useCases.interfaces.UserUseCase
@@ -25,6 +25,8 @@ import presentation.common.failure
 import presentation.common.loading
 import presentation.common.success
 import presentation.screens.wardrobe.ThingItem
+import presentation.screens.weather.WeatherCurrentItemData
+import presentation.screens.weather.WeatherForecastItemData
 import timber.log.Timber
 import utils.SchedulersFacade
 
@@ -38,6 +40,7 @@ class MainViewModel(
     private val weatherRepository: WeatherRepository,
     private val wardrobeUseCase: WardrobeUseCase,
     private val userUseCase: UserUseCase,
+    private val mapper: WeatherMapper,
     private val schedulers: SchedulersFacade
 ) : ViewModel() {
 
@@ -227,6 +230,15 @@ class MainViewModel(
                 }
             )
             .addTo(disposables)
+    }
+
+    fun mapToCurrentWeatherAndForecast(
+        weatherResponse: WeatherResponse,
+        language: Language
+    ): Pair<WeatherCurrentItemData, List<WeatherForecastItemData>> {
+        val mappedCurrentWeather = mapper.toCurrentWeatherItemData(weatherResponse, language)
+        val mappedForecast = weatherResponse.forecast.map { mapper.toForecastWeatherItemData(it) }
+        return mappedCurrentWeather to mappedForecast
     }
 
 }

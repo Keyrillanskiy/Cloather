@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/weatherLocationTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="48dp"
+        android:drawableStart="@drawable/ic_location"
+        android:drawablePadding="8dp"
+        android:textColor="@color/text_primary"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Russia, Penza" />
+
+    <ImageView
+        android:id="@+id/weatherHumanImageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:layout_marginEnd="24dp"
+        android:src="@drawable/ic_man"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/weatherLocationTextView"
+        tools:ignore="ContentDescription" />
+
+    <ImageView
+        android:id="@+id/weatherClothesImageView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="@id/weatherHumanImageView"
+        app:layout_constraintEnd_toEndOf="@id/weatherHumanImageView"
+        app:layout_constraintStart_toStartOf="@id/weatherHumanImageView"
+        app:layout_constraintTop_toTopOf="@id/weatherHumanImageView"
+        tools:ignore="ContentDescription" />
+
+    <TextView
+        android:id="@+id/weatherDegreesTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="90dp"
+        android:textColor="@color/text_primary"
+        android:textSize="72sp"
+        app:layout_constraintEnd_toStartOf="@id/weatherHumanImageView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/weatherLocationTextView"
+        tools:text="15°" />
+
+    <TextView
+        android:id="@+id/weatherTypeTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="16dp"
+        android:textColor="@color/text_primary"
+        app:layout_constraintEnd_toStartOf="@id/weatherHumanImageView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/weatherDegreesTextView"
+        tools:text="сильный дождь, гроза" />
+
+    <TextView
+        android:id="@+id/weatherFeelsLikeTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="4dp"
+        android:textColor="@color/text_primary"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/weatherTypeTextView"
+        tools:text="feels like: 18°" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

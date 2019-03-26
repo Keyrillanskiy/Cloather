@@ -1,14 +1,11 @@
 package presentation.screens.weather
 
+import android.graphics.drawable.LayerDrawable
 import android.view.View
-import android.view.ViewGroup
-import com.crashlytics.android.Crashlytics
-import com.github.keyrillanskiy.cloather.BuildConfig
-import com.github.keyrillanskiy.cloather.R
 import extensions.disable
 import extensions.enable
-import extensions.visible
 import kotlinx.android.synthetic.main.fragment_weather.view.*
+import kotlinx.android.synthetic.main.item_weather_current.view.*
 import presentation.common.BaseViewHolder
 
 /**
@@ -17,16 +14,31 @@ import presentation.common.BaseViewHolder
  */
 class WeatherViewHolder(private val rootView: View) : BaseViewHolder(rootView) {
 
+    private val adapter by lazy { WeatherAdapter() }
+
     var onRefresh: (() -> Unit)? = null
 
     fun setup(block: WeatherViewHolder.() -> Unit): WeatherViewHolder {
         block()
 
         rootView.run {
+            weatherRecyclerView.adapter = adapter
             mainRefreshLayout.setOnRefreshListener { onRefresh?.invoke() }
         }
 
         return this
+    }
+
+    fun showCurrentWeather(currentWeather: WeatherCurrentItemData) {
+        adapter.showCurrentWeather(currentWeather)
+    }
+
+    fun showWeatherForecast(forecast: List<WeatherForecastItemData>) {
+        adapter.showForecast(forecast)
+    }
+
+    fun showClothes(clothes: LayerDrawable) {
+        rootView.weatherClothesImageView.setImageDrawable(clothes)
     }
 
     fun showRefreshing() {

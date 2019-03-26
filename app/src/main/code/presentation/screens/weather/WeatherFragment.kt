@@ -32,7 +32,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.fragment_weather.*
+import kotlinx.android.synthetic.main.item_weather_current.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import presentation.common.*
 import presentation.screens.main.MainViewModel
@@ -129,7 +129,7 @@ class WeatherFragment : Fragment() {
     private fun handleStateChange(newState: FiniteState<Event>, oldState: FiniteState<Event>) {
         when (newState) {
             is WithoutLocationPermissionState -> currentState =
-                    currentState.getNextState(Event.RequestLocationPermission)
+                currentState.getNextState(Event.RequestLocationPermission)
 //            is WithoutLocationPermissionState -> currentState = currentState.getNextState(
 //                Event.RequestLocationPermission
 //            )
@@ -164,8 +164,12 @@ class WeatherFragment : Fragment() {
                 is Loading -> viewHolder.showRefreshing()
                 is Success -> {
                     val weather = response.value.first
-                    textTextView.text =
-                            "${weather.city}\n ${weather.currentWeather.type} ${weather.currentWeather.temperature}"
+                    val (currentWeather, forecast) = viewModel.mapToCurrentWeatherAndForecast(
+                        weather,
+                        getSystemLanguage()
+                    )
+                    viewHolder.showCurrentWeather(currentWeather)
+                    viewHolder.showWeatherForecast(forecast)
                     showClothes(response.value.second)
                     currentState = currentState.getNextState(Event.DataFetched)
                 }
@@ -220,8 +224,8 @@ class WeatherFragment : Fragment() {
         Single.fromCallable {
             val clothesDrawables = mutableListOf<Drawable>()
 
-            val imageWidth = clothesImageView.width
-            val imageHeight = clothesImageView.height
+            val imageWidth = weatherClothesImageView.width
+            val imageHeight = weatherClothesImageView.height
 
             val sortedClothes = clothes.sortedBy { it.priority }
 
@@ -244,13 +248,11 @@ class WeatherFragment : Fragment() {
                         clothesDrawables.add(drawable)
                     }
                 }
-            clothesDrawables
+            LayerDrawable(clothesDrawables.toTypedArray())
         }.subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({ clothesDrawables ->
-                val clothesDrawable = LayerDrawable(clothesDrawables.toTypedArray())
-                clothesImageView.setImageDrawable(clothesDrawable)
-
+                viewHolder.showClothes(clothesDrawables)
                 viewHolder.hideRefreshing()
             }, {
                 Timber.w(it)
