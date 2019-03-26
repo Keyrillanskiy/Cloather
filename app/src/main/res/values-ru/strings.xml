@@ -17,6 +17,8 @@
     <string name="authorization">Авторизация</string>
     <string name="authorization_error_title">Ошибка авторизации</string>
     <string name="authorization_via_google">Войти через Google</string>
+    <string name="short_app_description">Подбор одежды в соответствии с погодой. Теперь вы можете сконцентрироваться
+        на более важных задачах.</string>
 
     <!-- Gender screen -->
     <string name="choose_your_gender">Выберите ваш пол:</string>

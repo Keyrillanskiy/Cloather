@@ -18,6 +18,8 @@
     <string name="authorization">Authorization</string>
     <string name="authorization_error_title">Authorization error</string>
     <string name="authorization_via_google">Sign in via Google</string>
+    <string name="short_app_description">Get clothes set accordingly to the current weather. Now you can focus on
+        more important tasks.</string>
 
     <!-- Gender screen -->
     <string name="choose_your_gender">Choose your gender:</string>
