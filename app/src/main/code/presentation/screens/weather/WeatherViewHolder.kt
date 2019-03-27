@@ -2,8 +2,6 @@ package presentation.screens.weather
 
 import android.graphics.drawable.LayerDrawable
 import android.view.View
-import domain.models.values.Language
-import domain.models.values.WeatherType
 import extensions.disable
 import extensions.enable
 import kotlinx.android.synthetic.main.fragment_weather.view.*

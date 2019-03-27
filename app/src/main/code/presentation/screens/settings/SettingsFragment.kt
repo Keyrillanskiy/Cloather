@@ -43,7 +43,9 @@ class SettingsFragment : Fragment() {
                         }
                     }
                     is Failure -> {
-                        /*nothing*/
+                        val title = getString(R.string.error)
+                        val message = getString(R.string.unknown_error)
+                        parentInteractor?.onShowErrorDialog(title, message)
                     }
                 }
             })
@@ -58,7 +60,10 @@ class SettingsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         viewHolder = SettingsViewHolder(view).setup {
             onLogOutClick = { parentInteractor?.onLogOut() }
-            onGenderChanged = { gender -> viewModel.saveGender(gender) }
+            onGenderChanged = { gender ->
+                viewModel.saveGender(gender)
+                parentInteractor?.onSettingsChanged()
+            }
             onNotificationsClick = { context?.toast(R.string.feature_in_development) }
         }
 
@@ -81,4 +86,5 @@ class SettingsFragment : Fragment() {
 
 interface SettingsInteractor : ActivityInteractor {
     fun onLogOut()
+    fun onSettingsChanged()
 }

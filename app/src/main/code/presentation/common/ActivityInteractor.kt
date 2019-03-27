@@ -8,6 +8,13 @@ package presentation.common
  */
 interface ActivityInteractor {
     fun onShowLoading()
+
     fun onHideLoading()
+
     fun onInternetError()
+
+    fun onShowErrorDialog(
+        title: String? = null, message: String? = null,
+        onOkClick: (() -> Unit)? = null, onRetryClick: (() -> Unit)? = null
+    )
 }
