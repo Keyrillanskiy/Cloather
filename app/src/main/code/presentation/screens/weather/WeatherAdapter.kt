@@ -80,11 +80,11 @@ class WeatherCurrentItemViewHolder(private val rootView: View) : WeatherItemView
 
     fun bindData(data: WeatherCurrentItemData) {
         with(rootView) {
-            weatherLocationTextView.text = data.city
-            weatherDegreesTextView.text = data.temperature
+            weatherLocationTextView.text = data.city ?: ""
+            weatherDegreesTextView.text = data.temperature ?: ""
             when (data.currentLanguage) {
-                Language.RUSSIAN -> weatherTypeTextView.text = data.type.inRussian
-                Language.ENGLISH -> weatherTypeTextView.text = data.type.inEnglish
+                Language.RUSSIAN -> weatherTypeTextView.text = data.type?.inRussian ?: ""
+                Language.ENGLISH -> weatherTypeTextView.text = data.type?.inEnglish ?: ""
             }
         }
     }
@@ -106,10 +106,10 @@ class WeatherForecastItemViewHolder(private val rootView: View) : WeatherItemVie
 sealed class WeatherItemData
 
 data class WeatherCurrentItemData(
-    val city: String,
-    val temperature: String,
-    val type: WeatherType,
-    val currentLanguage: Language
+    val city: String? = null,
+    val temperature: String? = null,
+    val type: WeatherType? = null,
+    val currentLanguage: Language? = null
 ) : WeatherItemData()
 
 data class WeatherForecastItemData(

@@ -250,13 +250,17 @@ class WeatherFragment : Fragment() {
                     }
 
                     if (!imageUrl.contains("/things/null.png")) {
-                        val drawable = Glide.with(this)
-                            .asDrawable()
-                            .load(imageUrl)
-                            .submit(imageWidth, imageHeight)
-                            .get()
+                        try {
+                            val drawable = Glide.with(this)
+                                .asDrawable()
+                                .load(imageUrl)
+                                .submit(imageWidth, imageHeight)
+                                .get()
 
-                        clothesDrawables.add(drawable)
+                            drawable?.let { clothesDrawables.add(it) }
+                        } catch (e: Exception) {
+                            Timber.w(e)
+                        }
                     }
                 }
             LayerDrawable(clothesDrawables.toTypedArray())

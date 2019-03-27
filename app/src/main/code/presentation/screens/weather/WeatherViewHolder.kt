@@ -14,7 +14,7 @@ import presentation.common.BaseViewHolder
  */
 class WeatherViewHolder(private val rootView: View) : BaseViewHolder(rootView) {
 
-    private val adapter by lazy { WeatherAdapter() }
+    private val adapter = WeatherAdapter()
 
     var onRefresh: (() -> Unit)? = null
 
@@ -23,6 +23,8 @@ class WeatherViewHolder(private val rootView: View) : BaseViewHolder(rootView) {
 
         rootView.run {
             weatherRecyclerView.adapter = adapter
+            //todo убрать костыль с инициализацией itemViewHolder
+            adapter.showCurrentWeather(WeatherCurrentItemData())
             mainRefreshLayout.setOnRefreshListener { onRefresh?.invoke() }
         }
 
