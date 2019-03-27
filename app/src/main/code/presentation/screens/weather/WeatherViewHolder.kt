@@ -2,6 +2,8 @@ package presentation.screens.weather
 
 import android.graphics.drawable.LayerDrawable
 import android.view.View
+import domain.models.values.Language
+import domain.models.values.WeatherType
 import extensions.disable
 import extensions.enable
 import kotlinx.android.synthetic.main.fragment_weather.view.*
@@ -14,7 +16,7 @@ import presentation.common.BaseViewHolder
  */
 class WeatherViewHolder(private val rootView: View) : BaseViewHolder(rootView) {
 
-    private val adapter by lazy { WeatherAdapter() }
+    private val adapter = WeatherAdapter()
 
     var onRefresh: (() -> Unit)? = null
 
@@ -23,6 +25,8 @@ class WeatherViewHolder(private val rootView: View) : BaseViewHolder(rootView) {
 
         rootView.run {
             weatherRecyclerView.adapter = adapter
+            //todo убрать костыль с инициализацией itemViewHolder
+            adapter.showCurrentWeather(WeatherCurrentItemData())
             mainRefreshLayout.setOnRefreshListener { onRefresh?.invoke() }
         }
 
