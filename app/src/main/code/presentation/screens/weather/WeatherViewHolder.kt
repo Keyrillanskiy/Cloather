@@ -1,7 +1,8 @@
 package presentation.screens.weather
 
-import android.graphics.drawable.LayerDrawable
+import android.graphics.drawable.Drawable
 import android.view.View
+import domain.models.values.Gender
 import extensions.disable
 import extensions.enable
 import kotlinx.android.synthetic.main.fragment_weather.view.*
@@ -31,6 +32,14 @@ class WeatherViewHolder(private val rootView: View) : BaseViewHolder(rootView) {
         return this
     }
 
+    fun showHuman(gender: Gender) {
+        adapter.showHuman(gender)
+    }
+
+    fun showHumanPlaceholder(gender: Gender) {
+        adapter.showHumanPlaceholder(gender)
+    }
+
     fun showCurrentWeather(currentWeather: WeatherCurrentItemData) {
         adapter.showCurrentWeather(currentWeather)
     }
@@ -39,8 +48,8 @@ class WeatherViewHolder(private val rootView: View) : BaseViewHolder(rootView) {
         adapter.showForecast(forecast)
     }
 
-    fun showClothes(clothes: LayerDrawable) {
-        rootView.weatherClothesImageView.setImageDrawable(clothes)
+    fun showClothes(clothes: Drawable) {
+        adapter.showClothes(clothes)
     }
 
     fun showRefreshing() {

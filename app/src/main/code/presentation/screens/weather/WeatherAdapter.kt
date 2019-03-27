@@ -1,10 +1,13 @@
 package presentation.screens.weather
 
+import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.DrawableRes
 import androidx.recyclerview.widget.RecyclerView
 import com.github.keyrillanskiy.cloather.R
+import domain.models.values.Gender
 import domain.models.values.Language
 import domain.models.values.WeatherType
 import kotlinx.android.synthetic.main.item_weather_current.view.*
@@ -65,6 +68,43 @@ class WeatherAdapter : RecyclerView.Adapter<WeatherItemViewHolder>() {
         notifyDataSetChanged()
     }
 
+    fun showHuman(gender: Gender) {
+        val item = items[CURRENT_WEATHER_ITEM_POSITION] as? WeatherCurrentItemData
+            ?: throw IllegalStateException("illegal item data: ${items[CURRENT_WEATHER_ITEM_POSITION]}")
+
+        val humanResId = when (gender) {
+            Gender.MALE -> R.drawable.ic_man
+            Gender.FEMALE -> R.drawable.ic_man //todo woman
+            Gender.UNDEFINED -> throw IllegalArgumentException("illegal gender: $gender")
+        }
+        val newItem = item.copy(humanImageResource = humanResId)
+        items[CURRENT_WEATHER_ITEM_POSITION] = newItem
+        notifyItemChanged(CURRENT_WEATHER_ITEM_POSITION)
+    }
+
+    fun showHumanPlaceholder(gender: Gender) {
+        val item = items[CURRENT_WEATHER_ITEM_POSITION] as? WeatherCurrentItemData
+            ?: throw IllegalStateException("illegal item data: ${items[CURRENT_WEATHER_ITEM_POSITION]}")
+
+        val humanResId = when (gender) {
+            Gender.MALE -> R.drawable.ic_man_placeholder
+            Gender.FEMALE -> R.drawable.ic_man_placeholder //todo woman
+            Gender.UNDEFINED -> throw IllegalArgumentException("illegal gender: $gender")
+        }
+        val newItem = item.copy(humanImageResource = humanResId, clothesDrawable = null)
+        items[CURRENT_WEATHER_ITEM_POSITION] = newItem
+        notifyItemChanged(CURRENT_WEATHER_ITEM_POSITION)
+    }
+
+    fun showClothes(drawable: Drawable) {
+        val item = items[CURRENT_WEATHER_ITEM_POSITION] as? WeatherCurrentItemData
+            ?: throw IllegalStateException("illegal item data: ${items[CURRENT_WEATHER_ITEM_POSITION]}")
+
+        val newItem = item.copy(clothesDrawable = drawable)
+        items[CURRENT_WEATHER_ITEM_POSITION] = newItem
+        notifyItemChanged(CURRENT_WEATHER_ITEM_POSITION)
+    }
+
     private companion object {
         private const val CURRENT_WEATHER_ITEM = 1
         private const val FORECAST_ITEM = 2
@@ -86,6 +126,8 @@ class WeatherCurrentItemViewHolder(private val rootView: View) : WeatherItemView
                 Language.RUSSIAN -> weatherTypeTextView.text = data.type?.inRussian ?: ""
                 Language.ENGLISH -> weatherTypeTextView.text = data.type?.inEnglish ?: ""
             }
+            data.humanImageResource?.let { weatherHumanImageView.setImageResource(it) }
+            weatherClothesImageView.setImageDrawable(data.clothesDrawable)
         }
     }
 
@@ -109,7 +151,9 @@ data class WeatherCurrentItemData(
     val city: String? = null,
     val temperature: String? = null,
     val type: WeatherType? = null,
-    val currentLanguage: Language? = null
+    val currentLanguage: Language? = null,
+    @DrawableRes val humanImageResource:  Int? = null,
+    val clothesDrawable: Drawable? = null
 ) : WeatherItemData()
 
 data class WeatherForecastItemData(

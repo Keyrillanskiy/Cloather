@@ -24,11 +24,11 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
         android:layout_marginEnd="24dp"
-        android:src="@drawable/ic_man"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/weatherLocationTextView"
-        tools:ignore="ContentDescription" />
+        tools:ignore="ContentDescription"
+        tools:src="@drawable/ic_man" />
 
     <ImageView
         android:id="@+id/weatherClothesImageView"

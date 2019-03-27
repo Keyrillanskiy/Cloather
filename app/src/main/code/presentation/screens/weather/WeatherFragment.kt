@@ -232,6 +232,9 @@ class WeatherFragment : Fragment() {
 
     //TODO refactor
     private fun showClothes(clothes: List<Thing>) {
+        val gender = viewModel.getUserGender()
+        viewHolder.showHumanPlaceholder(gender)
+
         Single.fromCallable {
             val clothesDrawables = mutableListOf<Drawable>()
 
@@ -242,7 +245,6 @@ class WeatherFragment : Fragment() {
 
             sortedClothes.filter { it.modelImages != null }
                 .forEach { thing ->
-                    val gender = viewModel.getUserGender()
                     val imageUrl = when (gender) {
                         Gender.MALE -> serverBaseUrl + thing.modelImages?.manImageUrl
                         Gender.FEMALE -> serverBaseUrl + thing.modelImages?.womanImageUrl
@@ -267,6 +269,7 @@ class WeatherFragment : Fragment() {
         }.subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({ clothesDrawables ->
+                viewHolder.showHuman(gender)
                 viewHolder.showClothes(clothesDrawables)
                 viewHolder.hideRefreshing()
             }, {
