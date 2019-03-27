@@ -130,15 +130,10 @@ class MainActivity : AppCompatActivity(), WeatherInteractor, WardrobeInteractor,
 
     private fun initMainScreen() {
         setContentView(com.github.keyrillanskiy.cloather.R.layout.activity_main)
-        viewHolder = MainViewHolder(root, supportFragmentManager).setup {
-            onSettingsLeaved = {
-                uploadSettings()
-                viewModel.fetchCategories()
-            }
-        }
+        viewHolder = MainViewHolder(root, supportFragmentManager).setup { /*empty*/ }
     }
 
-    private fun uploadSettings() {
+    override fun onSettingsChanged() {
         NetUtils.withNetConnection(
             onSuccess = {
                 viewModel.uploadSettings()

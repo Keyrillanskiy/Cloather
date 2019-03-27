@@ -7,6 +7,7 @@
     <string name="retry">Повторить</string>
     <string name="internet_connection_error_message">Проверьте свое интернет соединение и попробуйте снова</string>
     <string name="internet_error_title">Ошибка интернет соединения</string>
+    <string name="error">Ошибка</string>
     <string name="unknown_error">Неизвестная ошибка</string>
     <string name="feature_in_development">Функция в разработке</string>
     <string name="user_data_corrupted_error">Данные пользователя повреждены. Пожалуйста, авторизируйтесь снова.</string>

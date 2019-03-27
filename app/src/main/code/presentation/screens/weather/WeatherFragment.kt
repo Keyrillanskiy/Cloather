@@ -179,6 +179,16 @@ class WeatherFragment : Fragment() {
                 }
             }
         })
+
+        uploadSettingsLiveData.observe(this@WeatherFragment, Observer { response ->
+            when (response) {
+                is Loading -> parentInteractor?.onShowLoading()
+                is Success -> currentState = currentState.getNextState(Event.FetchLocation)
+                is Failure -> {
+                    /*nothing*/
+                }
+            }
+        })
     }
 
     private fun onReadyToFetch() {
@@ -413,11 +423,6 @@ interface WeatherInteractor : ActivityInteractor {
     fun onShowLocationPermissionReasonDialog(
         onPermitClick: (() -> Unit)? = null,
         onCancelClick: (() -> Unit)? = null
-    )
-
-    fun onShowErrorDialog(
-        title: String? = null, message: String? = null,
-        onOkClick: (() -> Unit)? = null, onRetryClick: (() -> Unit)? = null
     )
 
     fun onShowCase()

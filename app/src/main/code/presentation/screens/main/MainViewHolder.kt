@@ -20,8 +20,6 @@ class MainViewHolder(
     private val fragmentManager: FragmentManager
 ) : BaseViewHolder(rootView) {
 
-    var onSettingsLeaved: (() -> Unit)? = null
-
     fun setup(init: MainViewHolder.() -> Unit): MainViewHolder {
         init.invoke(this)
 
@@ -30,18 +28,6 @@ class MainViewHolder(
 
             mainViewPager.offscreenPageLimit = 3
             mainViewPager.adapter = adapter
-            mainViewPager.addOnPageChangeListener(object : ViewPager.SimpleOnPageChangeListener() {
-
-                var previousPosition = -1
-
-                override fun onPageSelected(position: Int) {
-                    if (previousPosition == SETTINGS_FRAGMENT_POSITION) {
-                        onSettingsLeaved?.invoke()
-                    }
-                    previousPosition = position
-                }
-
-            })
 
             mainBottomNavigation.setOnNavigationItemSelectedListener {
                 when (it.itemId) {
