@@ -10,6 +10,7 @@ import com.github.keyrillanskiy.cloather.R
 import domain.models.values.Gender
 import domain.models.values.Language
 import domain.models.values.WeatherType
+import extensions.visible
 import kotlinx.android.synthetic.main.item_weather_current.view.*
 import kotlinx.android.synthetic.main.item_weather_forecast.view.*
 
@@ -74,7 +75,7 @@ class WeatherAdapter : RecyclerView.Adapter<WeatherItemViewHolder>() {
 
         val humanResId = when (gender) {
             Gender.MALE -> R.drawable.ic_man
-            Gender.FEMALE -> R.drawable.ic_man //todo woman
+            Gender.FEMALE -> R.drawable.ic_woman
             Gender.UNDEFINED -> throw IllegalArgumentException("illegal gender: $gender")
         }
         val newItem = item.copy(humanImageResource = humanResId)
@@ -88,7 +89,7 @@ class WeatherAdapter : RecyclerView.Adapter<WeatherItemViewHolder>() {
 
         val humanResId = when (gender) {
             Gender.MALE -> R.drawable.ic_man_placeholder
-            Gender.FEMALE -> R.drawable.ic_man_placeholder //todo woman
+            Gender.FEMALE -> R.drawable.ic_woman_placeholder
             Gender.UNDEFINED -> throw IllegalArgumentException("illegal gender: $gender")
         }
         val newItem = item.copy(humanImageResource = humanResId, clothesDrawable = null)
@@ -126,7 +127,10 @@ class WeatherCurrentItemViewHolder(private val rootView: View) : WeatherItemView
                 Language.RUSSIAN -> weatherTypeTextView.text = data.type?.inRussian ?: ""
                 Language.ENGLISH -> weatherTypeTextView.text = data.type?.inEnglish ?: ""
             }
-            data.humanImageResource?.let { weatherHumanImageView.setImageResource(it) }
+            data.humanImageResource?.let {
+                weatherHumanImageView.setImageResource(it)
+                weatherHumanImageView.visible()
+            }
             weatherClothesImageView.setImageDrawable(data.clothesDrawable)
         }
     }

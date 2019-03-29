@@ -5,8 +5,9 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.graphics.drawable.Drawable
-import android.graphics.drawable.LayerDrawable
 import android.os.Build
 import android.os.Bundle
 import android.telephony.CellInfoGsm
@@ -15,6 +16,8 @@ import android.telephony.gsm.GsmCellLocation
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.graphics.drawable.toBitmap
+import androidx.core.graphics.drawable.toDrawable
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.bumptech.glide.Glide
@@ -259,13 +262,20 @@ class WeatherFragment : Fragment() {
                                 .submit(imageWidth, imageHeight)
                                 .get()
 
-                            drawable?.let { clothesDrawables.add(it) }
+                            drawable?.let {
+                                clothesDrawables.add(it)
+                            }
                         } catch (e: Exception) {
                             Timber.w(e)
                         }
                     }
                 }
-            LayerDrawable(clothesDrawables.toTypedArray())
+            val bitmap = Bitmap.createBitmap(imageWidth, imageHeight, Bitmap.Config.ARGB_8888)
+            val canvas = Canvas(bitmap)
+            for (drawable in clothesDrawables) {
+                canvas.drawBitmap(drawable.toBitmap(), 0.0f, 0.0f, null)
+            }
+            bitmap.toDrawable(resources)
         }.subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({ clothesDrawables ->
