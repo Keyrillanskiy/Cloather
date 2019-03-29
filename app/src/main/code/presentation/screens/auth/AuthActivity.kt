@@ -113,6 +113,7 @@ class AuthActivity : AppCompatActivity() {
 
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(googleAuthClientId)
+            .requestEmail()
             .build()
 
         val signInClient = GoogleSignIn.getClient(this, gso)

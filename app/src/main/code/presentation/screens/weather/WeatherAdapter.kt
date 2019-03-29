@@ -10,6 +10,7 @@ import com.github.keyrillanskiy.cloather.R
 import domain.models.values.Gender
 import domain.models.values.Language
 import domain.models.values.WeatherType
+import extensions.visible
 import kotlinx.android.synthetic.main.item_weather_current.view.*
 import kotlinx.android.synthetic.main.item_weather_forecast.view.*
 
@@ -126,7 +127,10 @@ class WeatherCurrentItemViewHolder(private val rootView: View) : WeatherItemView
                 Language.RUSSIAN -> weatherTypeTextView.text = data.type?.inRussian ?: ""
                 Language.ENGLISH -> weatherTypeTextView.text = data.type?.inEnglish ?: ""
             }
-            data.humanImageResource?.let { weatherHumanImageView.setImageResource(it) }
+            data.humanImageResource?.let {
+                weatherHumanImageView.setImageResource(it)
+                weatherHumanImageView.visible()
+            }
             weatherClothesImageView.setImageDrawable(data.clothesDrawable)
         }
     }
@@ -152,7 +156,7 @@ data class WeatherCurrentItemData(
     val temperature: String? = null,
     val type: WeatherType? = null,
     val currentLanguage: Language? = null,
-    @DrawableRes val humanImageResource:  Int? = null,
+    @DrawableRes val humanImageResource: Int? = null,
     val clothesDrawable: Drawable? = null
 ) : WeatherItemData()
 

@@ -138,6 +138,7 @@ class MainActivity : AppCompatActivity(), WeatherInteractor, WardrobeInteractor,
             onSuccess = {
                 viewModel.uploadSettings()
             }, onError = {
+                viewModel.fetchUserFromCache()
                 showUploadSettingsInternetError()
             })
     }

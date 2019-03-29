@@ -107,14 +107,12 @@ class WardrobeFragment : Fragment() {
 
         uploadSettingsLiveData.reObserve(this@WardrobeFragment, Observer { response ->
             when(response) {
-                is Loading -> parentInteractor?.onShowLoading()
                 is Success -> {
+                    parentInteractor?.onHideLoading()
                     viewModel.fetchCategories()
                     viewHolder.showDefaultToolbar()
                 }
-                is Failure -> {
-                    /*nothing*/
-                }
+                is Failure -> parentInteractor?.onHideLoading()
             }
 
         })

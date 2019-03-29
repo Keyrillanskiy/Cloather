@@ -45,7 +45,21 @@ class SettingsFragment : Fragment() {
                     is Failure -> {
                         val title = getString(R.string.error)
                         val message = getString(R.string.unknown_error)
+                        parentInteractor?.onHideLoading()
                         parentInteractor?.onShowErrorDialog(title, message)
+                    }
+                }
+            })
+
+            uploadSettingsLiveData.observe(this@SettingsFragment, Observer { response ->
+                when(response) {
+                    is Loading -> parentInteractor?.onShowLoading()
+                    is Failure -> {
+                        val title = getString(R.string.error)
+                        val message = getString(R.string.unknown_error)
+                        parentInteractor?.onHideLoading()
+                        parentInteractor?.onShowErrorDialog(title, message)
+                        viewModel.fetchUserFromCache()
                     }
                 }
             })
@@ -61,7 +75,6 @@ class SettingsFragment : Fragment() {
         viewHolder = SettingsViewHolder(view).setup {
             onLogOutClick = { parentInteractor?.onLogOut() }
             onGenderChanged = { gender ->
-                viewModel.saveGender(gender)
                 parentInteractor?.onSettingsChanged()
             }
             onNotificationsClick = { context?.toast(R.string.feature_in_development) }
