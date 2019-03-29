@@ -75,7 +75,7 @@ class WeatherAdapter : RecyclerView.Adapter<WeatherItemViewHolder>() {
 
         val humanResId = when (gender) {
             Gender.MALE -> R.drawable.ic_man
-            Gender.FEMALE -> R.drawable.ic_man //todo woman
+            Gender.FEMALE -> R.drawable.ic_woman
             Gender.UNDEFINED -> throw IllegalArgumentException("illegal gender: $gender")
         }
         val newItem = item.copy(humanImageResource = humanResId)
@@ -89,7 +89,7 @@ class WeatherAdapter : RecyclerView.Adapter<WeatherItemViewHolder>() {
 
         val humanResId = when (gender) {
             Gender.MALE -> R.drawable.ic_man_placeholder
-            Gender.FEMALE -> R.drawable.ic_man_placeholder //todo woman
+            Gender.FEMALE -> R.drawable.ic_woman_placeholder
             Gender.UNDEFINED -> throw IllegalArgumentException("illegal gender: $gender")
         }
         val newItem = item.copy(humanImageResource = humanResId, clothesDrawable = null)

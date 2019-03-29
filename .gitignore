@@ -59,3 +59,4 @@ fastlane/test_output
 fastlane/readme.md
 .idea/misc.xml
 app/src/main/code/utils/Config.kt
+app/src/main/res/drawable/man_pants.png

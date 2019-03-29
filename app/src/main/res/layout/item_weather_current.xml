@@ -29,7 +29,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/weatherLocationTextView"
-        tools:ignore="ContentDescription" />
+        tools:ignore="ContentDescription"
+        tools:visibility="visible" />
 
     <ImageView
         android:id="@+id/weatherClothesImageView"
@@ -39,7 +40,8 @@
         app:layout_constraintEnd_toEndOf="@id/weatherHumanImageView"
         app:layout_constraintStart_toStartOf="@id/weatherHumanImageView"
         app:layout_constraintTop_toTopOf="@id/weatherHumanImageView"
-        tools:ignore="ContentDescription" />
+        tools:ignore="ContentDescription"
+        tools:src="@drawable/man_pants" />
 
     <TextView
         android:id="@+id/weatherDegreesTextView"
