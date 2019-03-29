@@ -13,10 +13,12 @@
         android:drawableStart="@drawable/ic_location"
         android:drawablePadding="8dp"
         android:textColor="@color/text_primary"
+        android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="Russia, Penza" />
+        tools:text="Russia, Penza"
+        tools:visibility="visible" />
 
     <ImageView
         android:id="@+id/weatherHumanImageView"

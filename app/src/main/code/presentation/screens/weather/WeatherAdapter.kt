@@ -121,7 +121,9 @@ class WeatherCurrentItemViewHolder(private val rootView: View) : WeatherItemView
 
     fun bindData(data: WeatherCurrentItemData) {
         with(rootView) {
+            weatherLocationTextView.visibility = if(data.city != null) View.VISIBLE else View.INVISIBLE
             weatherLocationTextView.text = data.city ?: ""
+
             weatherDegreesTextView.text = data.temperature ?: ""
             when (data.currentLanguage) {
                 Language.RUSSIAN -> weatherTypeTextView.text = data.type?.inRussian ?: ""

@@ -75,6 +75,7 @@ class SettingsFragment : Fragment() {
         viewHolder = SettingsViewHolder(view).setup {
             onLogOutClick = { parentInteractor?.onLogOut() }
             onGenderChanged = { gender ->
+                viewModel.saveGender(gender)
                 parentInteractor?.onSettingsChanged()
             }
             onNotificationsClick = { context?.toast(R.string.feature_in_development) }
