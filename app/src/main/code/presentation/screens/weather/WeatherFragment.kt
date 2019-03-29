@@ -21,6 +21,8 @@ import androidx.core.graphics.drawable.toDrawable
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.RequestOptions
 import com.github.keyrillanskiy.cloather.R
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
@@ -259,6 +261,7 @@ class WeatherFragment : Fragment() {
                             val drawable = Glide.with(this)
                                 .asDrawable()
                                 .load(imageUrl)
+                                .apply(RequestOptions().diskCacheStrategy(DiskCacheStrategy.NONE))
                                 .submit(imageWidth, imageHeight)
                                 .get()
 
