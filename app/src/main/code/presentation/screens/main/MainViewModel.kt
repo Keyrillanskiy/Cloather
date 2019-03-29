@@ -147,6 +147,10 @@ class MainViewModel(
             .addTo(disposables)
     }
 
+    fun fetchUserFromCache() {
+        _userLiveData.value = Response.success(preferences.fetchUser())
+    }
+
     fun uploadSettings() {
         val user = preferences.fetchUser()
         val uid = user.id

@@ -156,7 +156,7 @@ data class WeatherCurrentItemData(
     val temperature: String? = null,
     val type: WeatherType? = null,
     val currentLanguage: Language? = null,
-    @DrawableRes val humanImageResource:  Int? = null,
+    @DrawableRes val humanImageResource: Int? = null,
     val clothesDrawable: Drawable? = null
 ) : WeatherItemData()
 
