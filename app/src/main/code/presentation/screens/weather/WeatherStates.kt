@@ -39,6 +39,7 @@ class WithoutLocationPermissionState : FiniteState<Event> {
 class LocationPermissionRequestedState : FiniteState<Event> {
     override fun getNextState(event: Event): FiniteState<Event> {
         return when (event) {
+            is Event.RequestLocationPermission, Event.FetchLocation -> LocationPermissionRequestedState()
             is Event.LocationPermissionGranted -> WithLocationPermissionState()
             is Event.LocationPermissionRejected -> WithoutLocationPermissionState()
             else -> throw IllegalStateException("Invalid event $event passed to state $this")

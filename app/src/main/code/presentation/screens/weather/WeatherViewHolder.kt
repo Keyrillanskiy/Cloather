@@ -60,8 +60,4 @@ class WeatherViewHolder(private val rootView: View) : BaseViewHolder(rootView) {
         rootView.mainRefreshLayout.isRefreshing = false
     }
 
-    fun enableRefreshing() = rootView.mainRefreshLayout.enable()
-
-    fun disableRefreshing() = rootView.mainRefreshLayout.disable()
-
 }

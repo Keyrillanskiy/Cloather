@@ -80,9 +80,13 @@ class WeatherFragment : Fragment() {
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
 
         viewHolder = WeatherViewHolder(view).setup {
-            disableRefreshing()
-
-            onRefresh = { currentState = currentState.getNextState(Event.FetchLocation) }
+            onRefresh = {
+                currentState = if (PermissionUtils.isLocationPermissionGranted(requireContext())) {
+                    currentState.getNextState(Event.FetchLocation)
+                } else {
+                    currentState.getNextState(Event.RequestLocationPermission)
+                }
+            }
         }
 
         isFirstLaunch = savedInstanceState == null
@@ -110,6 +114,7 @@ class WeatherFragment : Fragment() {
         ) {
             currentState.getNextState(Event.LocationPermissionGranted)
         } else {
+            viewHolder.hideRefreshing()
             currentState.getNextState(Event.LocationPermissionRejected)
         }
     }
@@ -197,7 +202,6 @@ class WeatherFragment : Fragment() {
     }
 
     private fun onReadyToFetch() {
-        viewHolder.enableRefreshing()
         if (isFirstLaunch) {
             isFirstLaunch = false
             parentInteractor?.onShowCase()
@@ -306,11 +310,13 @@ class WeatherFragment : Fragment() {
         if (PermissionUtils.isLocationPermissionGranted(requireContext())) {
             currentState = currentState.getNextState(Event.LocationPermissionGranted)
         } else {
+            viewHolder.showRefreshing()
             parentInteractor?.onShowLocationPermissionReasonDialog(
                 onPermitClick = {
                     PermissionUtils.requestLocationPermissionsInFragment(this, RC_LOCATION_PERMISSION)
                 }, onCancelClick = {
                     currentState = currentState.getNextState(Event.LocationPermissionRejected)
+                    viewHolder.hideRefreshing()
                 }
             )
         }
