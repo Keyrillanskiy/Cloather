@@ -13,19 +13,20 @@
         android:layout_marginStart="24dp"
         android:layout_marginTop="16dp"
         android:layout_marginBottom="16dp"
+        android:layout_weight="1"
         android:textColor="@color/text_primary"
         tools:text="12:00" />
 
     <ImageView
         android:id="@+id/weatherForecastImageView"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:layout_marginTop="16dp"
         android:layout_marginBottom="16dp"
         android:layout_weight="1"
         tools:ignore="ContentDescription"
-        tools:src="@drawable/ic_arrow_back" />
+        tools:src="@drawable/ic_weather_cloudy" />
 
     <TextView
         android:id="@+id/weatherForecastDegreesTextView"
@@ -35,6 +36,8 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="24dp"
         android:layout_marginBottom="16dp"
+        android:layout_weight="1"
+        android:gravity="end"
         android:textColor="@color/text_primary"
         tools:text="16°" />
 
