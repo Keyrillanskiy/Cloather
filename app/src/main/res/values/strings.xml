@@ -1,3 +1,52 @@
 <resources>
-    <string name="app_name">Cloather</string>
+
+    <string name="app_name" translatable="false">Cloather</string>
+
+    <!-- Common -->
+    <string name="cancel">Cancel</string>
+    <string name="ok">OK</string>
+    <string name="retry">Retry</string>
+    <string name="internet_connection_error_message">Check your internet connection and try again</string>
+    <string name="internet_error_title">Internet error</string>
+    <string name="error">Error</string>
+    <string name="unknown_error">Unknown error</string>
+    <string name="feature_in_development">Feature in development</string>
+    <string name="user_data_corrupted_error">Your user data is corrupted. Authorize again, please.</string>
+    <string name="wardrobe">Wardrobe</string>
+    <string name="weather">Weather</string>
+
+    <!-- Auth screen -->
+    <string name="authorization">Authorization</string>
+    <string name="authorization_error_title">Authorization error</string>
+    <string name="authorization_via_google">Sign in via Google</string>
+    <string name="short_app_description">Get clothes set accordingly to the current weather. Now you can focus on
+        more important tasks.</string>
+
+    <!-- Gender screen -->
+    <string name="choose_your_gender">Choose your gender:</string>
+    <string name="saving_your_gender">Saving your gender</string>
+    <string name="saving_your_gender_error_title">Save gender error</string>
+    <string name="get_started">Get started</string>
+
+    <!-- Main screen -->
+    <string name="settings">Settings</string>
+    <string name="location_permission_reason">We need your location permission to get weather</string>
+    <string name="permit">Permit</string>
+    <string name="location_error">Loading location error</string>
+    <string name="fetching_data_interner_error_title">Fetching data error</string>
+    <string name="tutorial_circle_one">Get weather forecast and appropriate set of clothes</string>
+    <string name="tutorial_circle_two">Configure your wardrobe for optimal clothing</string>
+    <string name="tutorial_circle_three">Set up your profile</string>
+    <string name="got_it">Got it</string>
+
+    <!-- Settings screen -->
+    <string name="logout">Log out</string>
+    <string name="your_gender">Your gender:</string>
+    <string name="male_gender">male</string>
+    <string name="female_gender">female</string>
+    <string name="notifications">Notifications</string>
+    <string name="notifications_description">Messages about important weather changes and outfit recommendations</string>
+    <string name="rate_app">Rate app</string>
+    <string name="upload_settings_error">Upload user settings failed</string>
+
 </resources>
