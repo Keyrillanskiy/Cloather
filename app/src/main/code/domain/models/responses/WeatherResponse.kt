@@ -1,5 +1,7 @@
 package domain.models.responses
 
+import android.content.Context
+import com.github.keyrillanskiy.cloather.R
 import com.google.gson.annotations.SerializedName
 import java.text.SimpleDateFormat
 import java.util.*
@@ -17,16 +19,18 @@ data class WeatherResponse(
     val forecast: List<Forecast>
 )
 
-data class CurrentWeather(@SerializedName("temp") val temperature: Int, val type: String)
+data class CurrentWeather(
+    @SerializedName("temp") val temperature: Int,
+    @SerializedName("feelsLikeTemp") val feelsLikeTemperature: Int,
+    val type: String
+)
 
 fun CurrentWeather.temperature(): String {
-    var strTemperature = temperature.toString()
+    return "${temperature}˚"
+}
 
-    if (temperature > 0) {
-        strTemperature = "+$strTemperature"
-    }
-
-    return "$strTemperature˚"
+fun CurrentWeather.feelsLike(context: Context): String {
+    return context.getString(R.string.feels_like, feelsLikeTemperature)
 }
 
 data class Forecast(

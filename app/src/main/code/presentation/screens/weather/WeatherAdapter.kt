@@ -125,6 +125,8 @@ class WeatherCurrentItemViewHolder(private val rootView: View) : WeatherItemView
             weatherLocationTextView.text = data.city ?: ""
 
             weatherDegreesTextView.text = data.temperature ?: ""
+            weatherFeelsLikeTextView.text = data.feelsLike ?: ""
+
             when (data.currentLanguage) {
                 Language.RUSSIAN -> weatherTypeTextView.text = data.type?.inRussian ?: ""
                 Language.ENGLISH -> weatherTypeTextView.text = data.type?.inEnglish ?: ""
@@ -156,6 +158,7 @@ sealed class WeatherItemData
 data class WeatherCurrentItemData(
     val city: String? = null,
     val temperature: String? = null,
+    val feelsLike: String? = null,
     val type: WeatherType? = null,
     val currentLanguage: Language? = null,
     @DrawableRes val humanImageResource: Int? = null,
