@@ -44,11 +44,5 @@ fun Forecast.time(): String {
 }
 
 fun Forecast.temperature(): String {
-    var strTemperature = temperature.toString()
-
-    if (temperature > 0) {
-        strTemperature = "+$strTemperature"
-    }
-
-    return "$strTemperature˚"
+    return "$temperature˚"
 }
