@@ -17,22 +17,23 @@ import retrofit2.http.*
 interface WardrobeApiSpec {
 
     @GET("/api/things/{id}")
-    fun fetchThing(@Path("id") id: String, @Body thingId: RequestBody): Single<Thing>
+    fun fetchThing(@Path("id") id: String, @Body thingId: RequestBody, @Query("lang") language: String): Single<Thing>
 
     @GET("/api/things")
-    fun fetchThingByCriteria(@QueryMap filters: Map<String, String?>): Single<List<Thing>>
+    fun fetchThingByCriteria(@QueryMap filters: Map<String, String?>, @Query("lang") language: String): Single<List<Thing>>
 
     @GET("/api/categories")
-    fun fetchCategories(@Query("gender") gender: String): Single<List<Category>>
+    fun fetchCategories(@Query("gender") gender: String, @Query("lang") language: String): Single<List<Category>>
 
     @GET("/api/categories/{id}")
-    fun fetchCategory(@Path("id") categoryId: String): Single<Category>
+    fun fetchCategory(@Path("id") categoryId: String, @Query("lang") language: String): Single<Category>
 
     @GET("/api/whattowear")
     fun fetchWhatToWear(
         @Query("lat") latitude: Double,
         @Query("lon") longitude: Double,
-        @Query("token") token: String
+        @Query("token") token: String,
+        @Query("lang") language: String
     ): Single<List<Thing>>
 
     @PUT("/api/user/{id}/defaultwardrobe")

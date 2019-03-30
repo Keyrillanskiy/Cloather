@@ -72,6 +72,10 @@ class ReadyToFetchDataState : FiniteState<Event> {
         return when (event) {
             is Event.InternetDisabled -> ReadyToFetchDataState()
             is Event.FetchLocation -> LoadingGeolocationState()
+            is Event.FetchData -> UpdatingDataState(
+                event.latitude,
+                event.longitude
+            )
             else -> throw IllegalStateException("Invalid event $event passed to state $this")
         }
     }

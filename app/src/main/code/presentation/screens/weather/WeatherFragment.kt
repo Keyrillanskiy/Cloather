@@ -42,6 +42,7 @@ import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import presentation.common.*
 import presentation.screens.main.MainViewModel
 import timber.log.Timber
+import utils.LanguageUtils
 import utils.NetUtils
 import utils.PermissionUtils
 import utils.serverBaseUrl
@@ -297,13 +298,7 @@ class WeatherFragment : Fragment() {
     }
 
     private fun getSystemLanguage(): Language {
-        val currentLocale = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            resources.configuration.locales.get(0)
-        } else {
-            resources.configuration.locale
-        }
-
-        return defineLanguage(currentLocale.language)
+        return LanguageUtils.getSystemLanguage(resources)
     }
 
     private fun showLocationPermissionReasonDialog() {
