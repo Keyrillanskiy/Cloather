@@ -2,10 +2,7 @@ package data.mappers.implementations
 
 import android.content.Context
 import data.mappers.interfaces.WeatherMapper
-import domain.models.responses.Forecast
-import domain.models.responses.WeatherResponse
-import domain.models.responses.feelsLike
-import domain.models.responses.temperature
+import domain.models.responses.*
 import domain.models.values.Language
 import domain.models.values.WeatherType
 import presentation.screens.weather.WeatherCurrentItemData
@@ -28,6 +25,9 @@ class WeatherMapperImpl(private val context: Context) : WeatherMapper {
             city = weatherResponse.city,
             temperature = currentWeather.temperature(),
             feelsLike = currentWeather.feelsLike(context),
+            windProperties = currentWeather.windProperties(context),
+            pressure = currentWeather.pressure(context),
+            humidity = currentWeather.humidity(context),
             type = currentWeather.type.toWeatherType(),
             currentLanguage = language
         )

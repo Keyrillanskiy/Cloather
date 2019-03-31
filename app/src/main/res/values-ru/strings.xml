@@ -38,6 +38,9 @@
     <string name="tutorial_circle_three">Настраивайте свой профиль</string>
     <string name="got_it">Понятно</string>
     <string name="feels_like">ощущается как: %d˚</string>
+    <string name="wind_properties">%1$d м/с</string>
+    <string name="pressure">%d гПа</string>
+    <string name="humidity">%d%%</string>
 
     <!-- Settings screen -->
     <string name="logout">Выйти из аккаунта</string>

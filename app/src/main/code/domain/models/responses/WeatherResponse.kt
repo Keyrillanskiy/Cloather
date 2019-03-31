@@ -22,7 +22,11 @@ data class WeatherResponse(
 data class CurrentWeather(
     @SerializedName("temp") val temperature: Int,
     @SerializedName("feelsLikeTemp") val feelsLikeTemperature: Int,
-    val type: String
+    @SerializedName("windSpeed") val windSpeed: Int,
+    @SerializedName("windDir") val windDirection: String,
+    @SerializedName("pressurePa") val pressure: Int,
+    @SerializedName("humidity") val humidity: Int,
+    @SerializedName("type") val type: String
 )
 
 fun CurrentWeather.temperature(): String {
@@ -31,6 +35,18 @@ fun CurrentWeather.temperature(): String {
 
 fun CurrentWeather.feelsLike(context: Context): String {
     return context.getString(R.string.feels_like, feelsLikeTemperature)
+}
+
+fun CurrentWeather.windProperties(context: Context): String {
+    return context.getString(R.string.wind_properties, windSpeed)
+}
+
+fun CurrentWeather.pressure(context: Context): String {
+    return context.getString(R.string.pressure, pressure)
+}
+
+fun CurrentWeather.humidity(context: Context): String {
+    return context.getString(R.string.humidity, humidity)
 }
 
 data class Forecast(

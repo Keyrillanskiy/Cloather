@@ -81,4 +81,49 @@
         app:layout_constraintTop_toBottomOf="@id/weatherTypeTextView"
         tools:text="feels like: 18°" />
 
+    <TextView
+        android:id="@+id/weatherWindTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="80dp"
+        android:drawableStart="@drawable/ic_wind"
+        android:drawablePadding="8dp"
+        android:textColor="@color/text_primary"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/weatherFeelsLikeTextView"
+        tools:text="7 m/s"
+        tools:visibility="visible" />
+
+    <TextView
+        android:id="@+id/weatherPressureTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="24dp"
+        android:drawableStart="@drawable/ic_pressure"
+        android:drawablePadding="8dp"
+        android:textColor="@color/text_primary"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/weatherWindTextView"
+        tools:text="977 hPa"
+        tools:visibility="visible" />
+
+    <TextView
+        android:id="@+id/weatherHumidityTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="24dp"
+        android:drawableStart="@drawable/ic_humidity"
+        android:drawablePadding="8dp"
+        android:textColor="@color/text_primary"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/weatherPressureTextView"
+        tools:text="99%"
+        tools:visibility="visible" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

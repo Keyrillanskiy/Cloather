@@ -39,6 +39,9 @@
     <string name="tutorial_circle_three">Set up your profile</string>
     <string name="got_it">Got it</string>
     <string name="feels_like">feels like: %d˚</string>
+    <string name="wind_properties">%1$d m/s</string>
+    <string name="pressure">%d hPa</string>
+    <string name="humidity">%d%%</string>
 
     <!-- Settings screen -->
     <string name="logout">Log out</string>
