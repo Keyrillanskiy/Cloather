@@ -145,6 +145,8 @@ class WeatherCurrentItemViewHolder(private val rootView: View) : WeatherItemView
                 weatherHumanImageView.visible()
             }
             weatherClothesImageView.setImageDrawable(data.clothesDrawable)
+
+            data.weatherBackgroundRes?.let { weatherBackgroundImageView.setImageResource(it) }
         }
     }
 
@@ -174,6 +176,7 @@ data class WeatherCurrentItemData(
     val type: WeatherType? = null,
     val currentLanguage: Language? = null,
     @DrawableRes val humanImageResource: Int? = null,
+    @DrawableRes val weatherBackgroundRes: Int? = null,
     val clothesDrawable: Drawable? = null
 ) : WeatherItemData()
 
