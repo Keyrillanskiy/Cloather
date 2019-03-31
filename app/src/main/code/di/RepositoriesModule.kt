@@ -9,6 +9,7 @@ import data.repositories.interfaces.LocationRepository
 import data.repositories.interfaces.UserRepository
 import data.repositories.interfaces.WardrobeRepository
 import data.repositories.interfaces.WeatherRepository
+import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module.module
 
 /**
@@ -20,6 +21,6 @@ import org.koin.dsl.module.module
 val repositoriesModule = module {
     factory<UserRepository> { UserRepositoryImpl(get(), get(), UserMapperImpl()) }
     factory<LocationRepository> { LocationRepositoryImpl(get()) }
-    factory<WeatherRepository> { WeatherRepositoryImpl(get()) }
-    factory<WardrobeRepository> { WardrobeRepositoryImpl(get()) }
+    factory<WeatherRepository> { WeatherRepositoryImpl(get(), androidContext().resources) }
+    factory<WardrobeRepository> { WardrobeRepositoryImpl(get(), androidContext().resources) }
 }

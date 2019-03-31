@@ -8,6 +8,7 @@ import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.drawable.Drawable
+import android.graphics.drawable.LayerDrawable
 import android.os.Build
 import android.os.Bundle
 import android.telephony.CellInfoGsm
@@ -31,7 +32,6 @@ import domain.models.exceptions.UiException
 import domain.models.responses.Thing
 import domain.models.values.Gender
 import domain.models.values.Language
-import domain.models.values.defineLanguage
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -42,6 +42,7 @@ import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import presentation.common.*
 import presentation.screens.main.MainViewModel
 import timber.log.Timber
+import utils.LanguageUtils
 import utils.NetUtils
 import utils.PermissionUtils
 import utils.serverBaseUrl
@@ -247,8 +248,8 @@ class WeatherFragment : Fragment() {
         Single.fromCallable {
             val clothesDrawables = mutableListOf<Drawable>()
 
-            val imageWidth = weatherClothesImageView.width
-            val imageHeight = weatherClothesImageView.height
+            val imageWidth = weatherHumanImageView.width
+            val imageHeight = weatherHumanImageView.height
 
             val sortedClothes = clothes.sortedBy { it.priority }
 
@@ -266,6 +267,7 @@ class WeatherFragment : Fragment() {
                                 .asDrawable()
                                 .load(imageUrl)
                                 .apply(RequestOptions().diskCacheStrategy(DiskCacheStrategy.NONE))
+                                .apply(RequestOptions().centerInside())
                                 .submit(imageWidth, imageHeight)
                                 .get()
 
@@ -277,12 +279,27 @@ class WeatherFragment : Fragment() {
                         }
                     }
                 }
-            val bitmap = Bitmap.createBitmap(imageWidth, imageHeight, Bitmap.Config.ARGB_8888)
-            val canvas = Canvas(bitmap)
-            for (drawable in clothesDrawables) {
-                canvas.drawBitmap(drawable.toBitmap(), 0.0f, 0.0f, null)
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                LayerDrawable(clothesDrawables.toTypedArray()).apply {
+                    setPadding(0, 0, 0, 0)
+                    for (i in 0 until clothesDrawables.size) {
+                        setLayerSize(i, imageWidth, imageHeight)
+                    }
+                }
+            } else {
+                val bitmap = Bitmap.createBitmap(imageWidth, imageHeight, Bitmap.Config.ARGB_8888)
+                val canvas = Canvas(bitmap)
+                for (drawable in clothesDrawables) {
+                    canvas.drawBitmap(
+                        drawable.toBitmap(imageWidth, imageHeight, Bitmap.Config.ARGB_8888),
+                        0.0f,
+                        0.0f,
+                        null
+                    )
+                }
+                bitmap.toDrawable(resources)
             }
-            bitmap.toDrawable(resources)
         }.subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({ clothesDrawables ->
@@ -297,13 +314,7 @@ class WeatherFragment : Fragment() {
     }
 
     private fun getSystemLanguage(): Language {
-        val currentLocale = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            resources.configuration.locales.get(0)
-        } else {
-            resources.configuration.locale
-        }
-
-        return defineLanguage(currentLocale.language)
+        return LanguageUtils.getSystemLanguage(resources)
     }
 
     private fun showLocationPermissionReasonDialog() {

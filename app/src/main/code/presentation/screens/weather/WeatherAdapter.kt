@@ -121,13 +121,24 @@ class WeatherCurrentItemViewHolder(private val rootView: View) : WeatherItemView
 
     fun bindData(data: WeatherCurrentItemData) {
         with(rootView) {
-            weatherLocationTextView.visibility = if(data.city != null) View.VISIBLE else View.INVISIBLE
-            weatherLocationTextView.text = data.city ?: ""
+            weatherLocationTextView.visibility = if (data.city != null) View.VISIBLE else View.INVISIBLE
+            weatherLocationTextView.text = data.city
 
-            weatherDegreesTextView.text = data.temperature ?: ""
+            weatherDegreesTextView.text = data.temperature
+            weatherFeelsLikeTextView.text = data.feelsLike
+
+            weatherWindTextView.visibility = if (data.windProperties != null) View.VISIBLE else View.INVISIBLE
+            weatherWindTextView.text = data.windProperties
+
+            weatherPressureTextView.visibility = if (data.pressure != null) View.VISIBLE else View.INVISIBLE
+            weatherPressureTextView.text = data.pressure
+
+            weatherHumidityTextView.visibility = if (data.humidity != null) View.VISIBLE else View.INVISIBLE
+            weatherHumidityTextView.text = data.humidity
+
             when (data.currentLanguage) {
-                Language.RUSSIAN -> weatherTypeTextView.text = data.type?.inRussian ?: ""
-                Language.ENGLISH -> weatherTypeTextView.text = data.type?.inEnglish ?: ""
+                Language.RUSSIAN -> weatherTypeTextView.text = data.type?.inRussian
+                Language.ENGLISH -> weatherTypeTextView.text = data.type?.inEnglish
             }
             data.humanImageResource?.let {
                 weatherHumanImageView.setImageResource(it)
@@ -156,6 +167,10 @@ sealed class WeatherItemData
 data class WeatherCurrentItemData(
     val city: String? = null,
     val temperature: String? = null,
+    val feelsLike: String? = null,
+    val windProperties: String? = null,
+    val pressure: String? = null,
+    val humidity: String? = null,
     val type: WeatherType? = null,
     val currentLanguage: Language? = null,
     @DrawableRes val humanImageResource: Int? = null,

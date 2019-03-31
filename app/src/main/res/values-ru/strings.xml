@@ -13,6 +13,7 @@
     <string name="user_data_corrupted_error">Данные пользователя повреждены. Пожалуйста, авторизируйтесь снова.</string>
     <string name="wardrobe">Гардероб</string>
     <string name="weather">Погода</string>
+    <string name="settings">Настройки</string>
 
     <!-- Auth screen -->
     <string name="authorization">Авторизация</string>
@@ -28,7 +29,6 @@
     <string name="get_started">Начать</string>
 
     <!-- Main screen -->
-    <string name="settings">Настройки</string>
     <string name="location_permission_reason">Нам нужно ваше разрешение на местоположение, чтобы узнать погоду</string>
     <string name="permit">Разрешить</string>
     <string name="location_error">Ошибка загрузки местоположения</string>
@@ -37,6 +37,10 @@
     <string name="tutorial_circle_two">Сформируйте свой гардероб для оптимального подбора одежды</string>
     <string name="tutorial_circle_three">Настраивайте свой профиль</string>
     <string name="got_it">Понятно</string>
+    <string name="feels_like">ощущается как: %d˚</string>
+    <string name="wind_properties">%1$d м/с</string>
+    <string name="pressure">%d гПа</string>
+    <string name="humidity">%d%%</string>
 
     <!-- Settings screen -->
     <string name="logout">Выйти из аккаунта</string>

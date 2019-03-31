@@ -70,8 +70,12 @@ class LocationEnabledState : FiniteState<Event> {
 class ReadyToFetchDataState : FiniteState<Event> {
     override fun getNextState(event: Event): FiniteState<Event> {
         return when (event) {
-            is Event.InternetDisabled -> ReadyToFetchDataState()
+            is Event.InternetDisabled, Event.DataFetched -> ReadyToFetchDataState()
             is Event.FetchLocation -> LoadingGeolocationState()
+            is Event.FetchData -> UpdatingDataState(
+                event.latitude,
+                event.longitude
+            )
             else -> throw IllegalStateException("Invalid event $event passed to state $this")
         }
     }

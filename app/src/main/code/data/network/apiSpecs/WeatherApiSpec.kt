@@ -22,6 +22,6 @@ interface WeatherApiSpec {
      * @return Класс с текущей погодой и прогнозом погоды.
      */
     @GET("/api/weather/yandex")
-    fun fetchWeather(@Query("lat") latitude: Double, @Query("lon") longitude: Double): Single<WeatherResponse>
+    fun fetchWeather(@Query("lat") latitude: Double, @Query("lon") longitude: Double, @Query("lang") language: String): Single<WeatherResponse>
 
 }

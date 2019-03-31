@@ -14,6 +14,7 @@
     <string name="user_data_corrupted_error">Your user data is corrupted. Authorize again, please.</string>
     <string name="wardrobe">Wardrobe</string>
     <string name="weather">Weather</string>
+    <string name="settings">Settings</string>
 
     <!-- Auth screen -->
     <string name="authorization">Authorization</string>
@@ -28,8 +29,7 @@
     <string name="saving_your_gender_error_title">Save gender error</string>
     <string name="get_started">Get started</string>
 
-    <!-- Main screen -->
-    <string name="settings">Settings</string>
+    <!-- Weather screen -->
     <string name="location_permission_reason">We need your location permission to get weather</string>
     <string name="permit">Permit</string>
     <string name="location_error">Loading location error</string>
@@ -38,6 +38,10 @@
     <string name="tutorial_circle_two">Configure your wardrobe for optimal clothing</string>
     <string name="tutorial_circle_three">Set up your profile</string>
     <string name="got_it">Got it</string>
+    <string name="feels_like">feels like: %d˚</string>
+    <string name="wind_properties">%1$d m/s</string>
+    <string name="pressure">%d hPa</string>
+    <string name="humidity">%d%%</string>
 
     <!-- Settings screen -->
     <string name="logout">Log out</string>

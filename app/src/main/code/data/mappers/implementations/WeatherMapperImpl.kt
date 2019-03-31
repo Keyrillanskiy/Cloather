@@ -1,9 +1,8 @@
 package data.mappers.implementations
 
+import android.content.Context
 import data.mappers.interfaces.WeatherMapper
-import domain.models.responses.Forecast
-import domain.models.responses.WeatherResponse
-import domain.models.responses.temperature
+import domain.models.responses.*
 import domain.models.values.Language
 import domain.models.values.WeatherType
 import presentation.screens.weather.WeatherCurrentItemData
@@ -15,7 +14,7 @@ import java.util.*
  * @author Keyrillanskiy
  * @since 25.03.2019, 18:22.
  */
-class WeatherMapperImpl : WeatherMapper {
+class WeatherMapperImpl(private val context: Context) : WeatherMapper {
 
     override fun toCurrentWeatherItemData(
         weatherResponse: WeatherResponse,
@@ -25,6 +24,10 @@ class WeatherMapperImpl : WeatherMapper {
         return WeatherCurrentItemData(
             city = weatherResponse.city,
             temperature = currentWeather.temperature(),
+            feelsLike = currentWeather.feelsLike(context),
+            windProperties = currentWeather.windProperties(context),
+            pressure = currentWeather.pressure(context),
+            humidity = currentWeather.humidity(context),
             type = currentWeather.type.toWeatherType(),
             currentLanguage = language
         )
