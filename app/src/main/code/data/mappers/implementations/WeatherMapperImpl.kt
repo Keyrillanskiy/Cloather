@@ -1,6 +1,8 @@
 package data.mappers.implementations
 
 import android.content.Context
+import androidx.annotation.DrawableRes
+import com.github.keyrillanskiy.cloather.R
 import data.mappers.interfaces.WeatherMapper
 import domain.models.responses.*
 import domain.models.values.Language
@@ -28,6 +30,7 @@ class WeatherMapperImpl(private val context: Context) : WeatherMapper {
             windProperties = currentWeather.windProperties(context),
             pressure = currentWeather.pressure(context),
             humidity = currentWeather.humidity(context),
+            weatherBackgroundRes = currentWeather.type.toWeatherBackgroundRes(),
             type = currentWeather.type.toWeatherType(),
             currentLanguage = language
         )
@@ -60,6 +63,21 @@ class WeatherMapperImpl(private val context: Context) : WeatherMapper {
             "partly-cloudy-and-snow", "cloudy-and-snow" -> WeatherType.SNOW
             "overcast-and-snow" -> WeatherType.SNOWFALL
             else -> throw IllegalArgumentException("unknown weather type: $this")
+        }
+    }
+
+    @DrawableRes
+    private fun String.toWeatherBackgroundRes(): Int? {
+        return when (this) {
+            "clear", "mostly-clear" -> R.drawable.ic_weather_bg_sunny
+            "partly-cloudy" -> R.drawable.ic_weather_bg_cloudy
+            "overcast" -> R.drawable.ic_weather_bg_overcast
+            "partly-cloudy-and-light-rain", "partly-cloudy-and-rain", "cloudy-and-light-rain", "cloudy-and-rain",
+            "overcast-and-light-rain", "overcast-and-rain" -> R.drawable.ic_weather_bg_rain
+            "overcast-thunderstorms-with-rain" -> R.drawable.ic_weather_bg_thunderstorm_rain
+            "overcast-and-wet-snow", "partly-cloudy-and-light-snow", "overcast-and-light-snow", "cloudy-and-light-snow",
+            "partly-cloudy-and-snow", "cloudy-and-snow", "overcast-and-snow" -> R.drawable.ic_weather_bg_overcast_snow
+            else -> null
         }
     }
 
