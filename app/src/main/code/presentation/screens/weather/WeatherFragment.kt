@@ -248,8 +248,8 @@ class WeatherFragment : Fragment() {
         Single.fromCallable {
             val clothesDrawables = mutableListOf<Drawable>()
 
-            val imageWidth = weatherClothesImageView.width
-            val imageHeight = weatherClothesImageView.height
+            val imageWidth = weatherHumanImageView.width
+            val imageHeight = weatherHumanImageView.height
 
             val sortedClothes = clothes.sortedBy { it.priority }
 
@@ -267,6 +267,7 @@ class WeatherFragment : Fragment() {
                                 .asDrawable()
                                 .load(imageUrl)
                                 .apply(RequestOptions().diskCacheStrategy(DiskCacheStrategy.NONE))
+                                .apply(RequestOptions().centerInside())
                                 .submit(imageWidth, imageHeight)
                                 .get()
 

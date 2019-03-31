@@ -78,13 +78,17 @@ class SettingsViewHolder(private val rootView: View) : BaseViewHolder(rootView) 
     }
 
     private fun onMaleClick() {
-        val newGender = Gender.MALE
-        onGenderChanged?.invoke(newGender)
+        if (gender == Gender.FEMALE) {
+            gender = Gender.MALE
+            gender?.let { onGenderChanged?.invoke(it) }
+        }
     }
 
     private fun onFemaleClick() {
-        val newGender = Gender.FEMALE
-        onGenderChanged?.invoke(newGender)
+        if (gender == Gender.MALE) {
+            gender = Gender.FEMALE
+            gender?.let { onGenderChanged?.invoke(it) }
+        }
     }
 
 }
