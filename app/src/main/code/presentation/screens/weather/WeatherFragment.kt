@@ -8,6 +8,7 @@ import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.drawable.Drawable
+import android.graphics.drawable.LayerDrawable
 import android.os.Build
 import android.os.Bundle
 import android.telephony.CellInfoGsm
@@ -31,7 +32,6 @@ import domain.models.exceptions.UiException
 import domain.models.responses.Thing
 import domain.models.values.Gender
 import domain.models.values.Language
-import domain.models.values.defineLanguage
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -278,12 +278,24 @@ class WeatherFragment : Fragment() {
                         }
                     }
                 }
-            val bitmap = Bitmap.createBitmap(imageWidth, imageHeight, Bitmap.Config.ARGB_8888)
-            val canvas = Canvas(bitmap)
-            for (drawable in clothesDrawables) {
-                canvas.drawBitmap(drawable.toBitmap(), 0.0f, 0.0f, null)
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                LayerDrawable(clothesDrawables.toTypedArray()).apply {
+                    setPadding(0, 0, 0, 0)
+                }
+            } else {
+                val bitmap = Bitmap.createBitmap(imageWidth, imageHeight, Bitmap.Config.ARGB_8888)
+                val canvas = Canvas(bitmap)
+                for (drawable in clothesDrawables) {
+                    canvas.drawBitmap(
+                        drawable.toBitmap(imageWidth, imageHeight, Bitmap.Config.ARGB_8888),
+                        0.0f,
+                        0.0f,
+                        null
+                    )
+                }
+                bitmap.toDrawable(resources)
             }
-            bitmap.toDrawable(resources)
         }.subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({ clothesDrawables ->
