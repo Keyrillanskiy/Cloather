@@ -282,6 +282,9 @@ class WeatherFragment : Fragment() {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 LayerDrawable(clothesDrawables.toTypedArray()).apply {
                     setPadding(0, 0, 0, 0)
+                    for (i in 0 until clothesDrawables.size) {
+                        setLayerSize(i, imageWidth, imageHeight)
+                    }
                 }
             } else {
                 val bitmap = Bitmap.createBitmap(imageWidth, imageHeight, Bitmap.Config.ARGB_8888)
