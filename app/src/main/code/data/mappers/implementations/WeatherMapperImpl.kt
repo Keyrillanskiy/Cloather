@@ -70,7 +70,7 @@ class WeatherMapperImpl(private val context: Context) : WeatherMapper {
     private fun String.toWeatherBackgroundRes(): Int? {
         return when (this) {
             "clear", "mostly-clear" -> R.drawable.ic_weather_bg_sunny
-            "partly-cloudy" -> R.drawable.ic_weather_bg_cloudy
+            "cloudy", "partly-cloudy" -> R.drawable.ic_weather_bg_cloudy
             "overcast" -> R.drawable.ic_weather_bg_overcast
             "partly-cloudy-and-light-rain", "partly-cloudy-and-rain", "cloudy-and-light-rain", "cloudy-and-rain",
             "overcast-and-light-rain", "overcast-and-rain" -> R.drawable.ic_weather_bg_rain
