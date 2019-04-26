@@ -5,8 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="1dp"
-    android:background="@drawable/bg_rounded_corners_4dp"
-    android:orientation="vertical">
+    android:background="@drawable/bg_rounded_corners_white_ripple">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
